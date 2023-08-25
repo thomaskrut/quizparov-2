@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { TheChessboard, type MoveEvent } from 'vue3-chessboard'
 import type { Square } from 'chess.js'
 import 'vue3-chessboard/style.css'
@@ -7,15 +7,16 @@ import 'vue3-chessboard/style.css'
 import type { BoardApi, BoardConfig } from 'vue3-chessboard'
 import type { Move } from './types/Move'
 import { Turn } from './types/Turn'
-import { getTotalNumberOfGames } from './utils/utils'
+import { getTotalNumberOfGames, getRandomMove } from './utils/utils'
 
 import { useFetchMovesData } from './useFetchMovesData'
 
 const orientation = ref<BoardConfig['orientation']>('white')
-const currentTurn = ref<Turn>(new Turn(orientation.value))
+const turn = ref<Turn>(new Turn(orientation.value))
 const moveSequence = ref<string>('')
 const movesData = useFetchMovesData(moveSequence)
 const selectedMove = ref<Move>()
+const movesToConsider = 2
 
 let boardAPI: BoardApi;
 const boardConfig: BoardConfig = {
@@ -53,7 +54,17 @@ function previewMove(move: Move) {
 
 function submitMove() {
   if (selectedMove.value != undefined) moveSequence.value != '' ? moveSequence.value += "," + selectedMove.value?.uci : moveSequence.value = selectedMove.value.uci
+  turn.value.toggle()
 }
+
+watchEffect (() => {
+  console.log('Turn changed', turn.value.color)
+  if (turn.value.color != orientation.value && movesData.value != undefined) {
+    selectedMove.value = getRandomMove(movesData.value.moves, movesToConsider)
+    boardAPI.move(selectedMove.value.san)
+    submitMove()
+  }
+})
 
 const undoMove = () => {
   boardAPI.undoLastMove()
@@ -65,14 +76,13 @@ const undoMove = () => {
   <TheChessboard :board-config="boardConfig" @board-created="(api) => (boardAPI = api)"
     @move="(move) => pieceMoved(move)" />
 
-  <div v-if="movesData">
-    <v-btn v-for="move in movesData.moves" :key="move.san" @click="previewMove(move)" @mouseover="drawArrow(move)" @mouseout="removeArrows()">{{ move.san }} {{ getTotalNumberOfGames(move) }} </v-btn>
+  <div v-if="movesData/* && turn.color == orientation*/">
+    <v-btn v-for="move in movesData.moves" :key="move.san" @click="previewMove(move)" @mouseover="drawArrow(move)"
+      @mouseout="removeArrows()">{{ move.san }} {{ getTotalNumberOfGames(move) }}
+    </v-btn>
     <v-btn @click="submitMove">Välj drag</v-btn>
-  <v-btn @click="undoMove">Ångra drag</v-btn>
+    <v-btn @click="undoMove">Ångra drag</v-btn>
   </div>
-
-  
-
 </template>
 
 <style scoped></style>

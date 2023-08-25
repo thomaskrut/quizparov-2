@@ -9,5 +9,5 @@ export class Turn {
 
     toggle() {
         this.color = this.color === 'white' ? 'black' : 'white'
-    }
+    }   
 }
