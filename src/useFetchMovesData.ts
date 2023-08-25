@@ -3,11 +3,10 @@ import { toValue, watch, ref } from 'vue'
 import type { Ref } from 'vue'
 import type { MovesData } from "./types/MovesData";
 
-export function useFetchMovesData(pathVar: Ref<String>) {
+export function useFetchMovesData(pathVar: Ref<string>) {
 
     const movesData = ref<MovesData>()
-    
-    const moveCache = new Map()
+    const moveCache = new Map<string, MovesData>()
   
     watch(pathVar, (newPathVar) => {
   
@@ -19,11 +18,11 @@ export function useFetchMovesData(pathVar: Ref<String>) {
         return { movesData }
       }
       console.log('API call')
-      fetch('https://explorer.lichess.ovh/masters?moves=20&play=' + toValue(newPathVar))
+      fetch('https://explorer.lichess.ovh/masters?moves=10&topGames=0&play=' + toValue(newPathVar))
         .then((res) => res.json())
         .then((json) => {
           movesData.value = {
-            opening: json.opening,
+            opening: json.opening?.name,
             moves: json.moves
           }
           moveCache.set(toValue(newPathVar), movesData.value)
