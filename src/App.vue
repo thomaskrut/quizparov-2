@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { TheChessboard } from 'vue3-chessboard'
+import { ref, watch } from 'vue'
+import { TheChessboard, type MoveEvent } from 'vue3-chessboard'
 import 'vue3-chessboard/style.css'
 
 import type { BoardApi, BoardConfig } from 'vue3-chessboard'
-import type { Move } from 'chess.js'
+import type { Move } from './types/Move'
+import { Turn } from './types/Turn'
 
-const orientation = ref<BoardConfig["orientation"]>('black')
+import { useFetchMovesData } from './useFetchMovesData'
+
+const orientation = ref<BoardConfig['orientation']>('black')
+const currentTurn = ref<Turn>(new Turn(orientation.value))
+const currentMoveSequence = ref<string>('')
+//const currentMovesData = useFetchMovesData(currentMoveSequence)
 
 let boardAPI: BoardApi;
 const boardConfig: BoardConfig = {
@@ -14,9 +20,10 @@ const boardConfig: BoardConfig = {
   orientation: orientation.value,
 }
 
-const pieceMoved = (move: Move) => {
+const pieceMoved = (move: MoveEvent) => {
   console.log('Piece moved', move);
 }
+
 
 </script>
 
