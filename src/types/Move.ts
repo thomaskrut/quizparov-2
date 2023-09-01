@@ -5,5 +5,5 @@ export interface Move {
     white: number
     draws: number
     black: number
-    game: any //not used in application
+    readonly game: any //lichess API data, not used in application
 }

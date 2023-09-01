@@ -5,12 +5,12 @@ import type { MovesData } from "./types/MovesData";
 
 export function useFetchMovesData(pathVar: Ref<string>) {
 
-    const movesData = ref<MovesData>()
-    const moveCache = new Map<string, MovesData>()
+    const movesData = ref<MovesData | null>()
+    const moveCache = new Map<string, MovesData>(null)
   
     watch(pathVar, (newPathVar) => {
   
-      movesData.value = undefined
+      movesData.value = null
       
       if (moveCache.has(toValue(newPathVar))) {
         console.log('cached response')

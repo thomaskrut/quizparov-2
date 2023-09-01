@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, computed } from 'vue'
 import { TheChessboard, type MoveEvent } from 'vue3-chessboard'
 import type { Square } from 'chess.js'
 import 'vue3-chessboard/style.css'
@@ -10,15 +10,22 @@ import { Turn } from './types/Turn'
 import { getTotalNumberOfGames, getRandomMove } from './utils/utils'
 
 import { useFetchMovesData } from './useFetchMovesData'
+import { Tree } from './types/Tree'
 
 const orientation = ref<BoardConfig['orientation']>('white')
 const turn = ref<Turn>(new Turn(orientation.value))
 const moveSequence = ref<string>('')
 const movesData = useFetchMovesData(moveSequence)
-const selectedMove = ref<Move>()
+const selectedMove = ref<Move | null>(null)
 const movesToConsider = 2
+const message = ref<string>('Välj öppningsdrag')
+
+const tree: Tree = new Tree()
 
 let boardAPI: BoardApi;
+
+let submitButtonCallback = submitMove
+
 const boardConfig: BoardConfig = {
   coordinates: true,
   orientation: orientation.value,
@@ -32,7 +39,7 @@ const boardConfig: BoardConfig = {
 }
 
 function pieceMoved(move: MoveEvent) {
-  if (movesData.value != undefined) selectedMove.value = movesData.value.moves.find(m => m.san === move.san)
+  if (movesData.value != null) selectedMove.value = movesData.value.moves.filter(m => m.san === move.san)[0]
   console.log('Piece moved', move)
   console.log(selectedMove.value)
 }
@@ -52,14 +59,34 @@ function previewMove(move: Move) {
   selectedMove.value = move
 }
 
-function submitMove() {
-  if (selectedMove.value != undefined) moveSequence.value != '' ? moveSequence.value += "," + selectedMove.value?.uci : moveSequence.value = selectedMove.value.uci
-  turn.value.toggle()
+function resetBoard() {
+  boardAPI.resetBoard()
+  moveSequence.value = ''
+  submitButtonCallback = submitMove
+  message.value = 'Välj öppningsdrag'
+  tree.resetPosition()
 }
 
-watchEffect (() => {
+function submitMove() {
+
+  tree.goto(selectedMove.value)
+
+  if (!playersTurn.value) {
+    // Set state to either select new move or guess move
+  }
+
+  moveSequence.value = tree.moveSequence ?? ''
+  turn.value.toggle()
+  console.log(tree)
+}
+
+const playersTurn = computed(() => {
+  return turn.value.color == orientation.value
+})
+
+watchEffect(() => {
   console.log('Turn changed', turn.value.color)
-  if (turn.value.color != orientation.value && movesData.value != undefined) {
+  if (!playersTurn.value && movesData.value != undefined) {
     selectedMove.value = getRandomMove(movesData.value.moves, movesToConsider)
     boardAPI.move(selectedMove.value.san)
     submitMove()
@@ -73,6 +100,7 @@ const undoMove = () => {
 </script>
 
 <template>
+  {{ message }}
   <TheChessboard :board-config="boardConfig" @board-created="(api) => (boardAPI = api)"
     @move="(move) => pieceMoved(move)" />
 
@@ -80,7 +108,7 @@ const undoMove = () => {
     <v-btn v-for="move in movesData.moves" :key="move.san" @click="previewMove(move)" @mouseover="drawArrow(move)"
       @mouseout="removeArrows()">{{ move.san }} {{ getTotalNumberOfGames(move) }}
     </v-btn>
-    <v-btn @click="submitMove">Välj drag</v-btn>
+    <v-btn @click="submitButtonCallback">Välj drag</v-btn>
     <v-btn @click="undoMove">Ångra drag</v-btn>
   </div>
 </template>
