@@ -83,9 +83,20 @@ function confirmVariationSaved() {
   submitButtonCallback = submitAndReset
 }
 
+function guessMove() {
+  if (tree.hasNextMove(selectedMove.value!)) {
+    message.value = "Rätt drag!"
+    submitButtonCallback = submitMove
+  } else {
+    message.value = "Fel!"
+    submitButtonCallback = resetBoard
+  }
+}
+
 function determineState() {
   if (tree.hasMoves()) {
     message.value = "Vilket drag spelar du nu?"
+    submitButtonCallback = guessMove
   } else {
     message.value = "Välj motdrag"
     submitButtonCallback = confirmVariationSaved

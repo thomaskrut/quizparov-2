@@ -7,15 +7,18 @@ export class Tree {
     moveSequence: Array<Move> = []
 
     addMove(move: Move) {
+        const currentNode = this.getCurrentNode()
+        if (currentNode.children.find(node => node.move?.uci === move.uci) === undefined) {
+            currentNode.children.push({move: move, children: []})
+        }
         this.moveSequence.push(move)
-        this.getCurrentNode().children.push({move: move, children: []})
     }
 
     getCurrentNode(): MoveNode {
         let currentNode = this.root
         this.moveSequence.forEach(move => {
            if (currentNode.children.length > 0) {
-               currentNode = currentNode.children.find(node => node.move?.uci === move.uci) as MoveNode ?? currentNode
+               currentNode = currentNode.children.filter(node => node.move?.uci === move.uci)[0] as MoveNode ?? currentNode
            }
         })
         return currentNode
@@ -25,16 +28,17 @@ export class Tree {
         return this.getCurrentNode().children.length > 0
     }
 
+    hasNextMove(move: Move): boolean {
+        return this.getCurrentNode().children.find(node => node.move?.uci === move.uci) !== undefined
+    }
+
     resetMoveSequence() {
         this.moveSequence = []
     }
 
     getMoveSequence(): string {
-        let result: string = ""
-        this.moveSequence.forEach(move => {
-            result += move.uci + ","
-        })
-        return result.substring(0, result.length - 1)
+        return this.moveSequence.map(move => move.uci).join(",");
     }
+
 
 }
