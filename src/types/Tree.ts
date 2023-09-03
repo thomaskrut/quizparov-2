@@ -3,30 +3,38 @@ import type { MoveNode } from "./MoveNode"
 
 export class Tree {
 
-    root: MoveNode | null = null
-    position: MoveNode | null = null
-    moveSequence: string = ''
+    root: MoveNode = {move: null, children: []}
+    moveSequence: Array<Move> = []
 
-    goto(move: Move | null) {
-
-        if (move === null) return
-        let newMoveNode = this.position?.children.find((child) => child.move?.san === move.san) ?? null
-        if (newMoveNode === null) {
-            newMoveNode = { move: move, children: [] }
-            this.position?.children.push(newMoveNode)
-        }
-        this.position = newMoveNode
-        this.moveSequence == '' ? this.moveSequence = move.uci : this.moveSequence += "," + move.uci
-
+    addMove(move: Move) {
+        this.moveSequence.push(move)
+        this.getCurrentNode().children.push({move: move, children: []})
     }
 
-    resetPosition() {
-        this.position = this.root
-        this.moveSequence = ''
+    getCurrentNode(): MoveNode {
+        let currentNode = this.root
+        this.moveSequence.forEach(move => {
+           if (currentNode.children.length > 0) {
+               currentNode = currentNode.children.find(node => node.move?.uci === move.uci) as MoveNode ?? currentNode
+           }
+        })
+        return currentNode
     }
 
-    isNewVariation() {
-        return this.position?.children.length === 0
+    hasMoves(): boolean {
+        return this.getCurrentNode().children.length > 0
+    }
+
+    resetMoveSequence() {
+        this.moveSequence = []
+    }
+
+    getMoveSequence(): string {
+        let result: string = ""
+        this.moveSequence.forEach(move => {
+            result += move.uci + ","
+        })
+        return result.substring(0, result.length - 1)
     }
 
 }

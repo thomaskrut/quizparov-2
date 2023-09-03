@@ -40,8 +40,6 @@ const boardConfig: BoardConfig = {
 
 function pieceMoved(move: MoveEvent) {
   if (movesData.value != null) selectedMove.value = movesData.value.moves.filter(m => m.san === move.san)[0]
-  console.log('Piece moved', move)
-  console.log(selectedMove.value)
 }
 
 function drawArrow(move: Move) {
@@ -64,20 +62,34 @@ function resetBoard() {
   moveSequence.value = ''
   submitButtonCallback = submitMove
   message.value = 'Välj öppningsdrag'
-  tree.resetPosition()
+  tree.resetMoveSequence()
 }
 
 function submitMove() {
-
-  tree.goto(selectedMove.value)
-
-  if (!playersTurn.value) {
-    // Set state to either select new move or guess move
-  }
-
-  moveSequence.value = tree.moveSequence ?? ''
+  tree.addMove(selectedMove.value!)
+  moveSequence.value = tree.getMoveSequence()
   turn.value.toggle()
+  if (playersTurn.value) determineState()
   console.log(tree)
+}
+
+function submitAndReset() {
+  tree.addMove(selectedMove.value!)
+  resetBoard()
+}
+
+function confirmVariationSaved() {
+  message.value = "Variant sparad"
+  submitButtonCallback = submitAndReset
+}
+
+function determineState() {
+  if (tree.hasMoves()) {
+    message.value = "Vilket drag spelar du nu?"
+  } else {
+    message.value = "Välj motdrag"
+    submitButtonCallback = confirmVariationSaved
+  }
 }
 
 const playersTurn = computed(() => {
@@ -85,7 +97,6 @@ const playersTurn = computed(() => {
 })
 
 watchEffect(() => {
-  console.log('Turn changed', turn.value.color)
   if (!playersTurn.value && movesData.value != undefined) {
     selectedMove.value = getRandomMove(movesData.value.moves, movesToConsider)
     boardAPI.move(selectedMove.value.san)
