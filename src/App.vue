@@ -7,6 +7,7 @@ import 'vue3-chessboard/style.css'
 import type { BoardApi, BoardConfig } from 'vue3-chessboard'
 import type { Move } from './types/Move'
 import { Turn } from './types/Turn'
+import type { UserFeedback } from './types/UserFeedback'
 import { getTotalNumberOfGames, getRandomMove } from './utils/utils'
 
 import { useFetchMovesData } from './useFetchMovesData'
@@ -18,7 +19,7 @@ const moveSequence = ref<string>('')
 const movesData = useFetchMovesData(moveSequence)
 const selectedMove = ref<Move | null>(null)
 const movesToConsider = 2
-const message = ref<string>('Välj öppningsdrag')
+const userFeedback = ref<UserFeedback>({ message: 'Välj öppningsdrag', color: 'primary', icon: "mdi-information", buttonText: "Välj drag"})
 
 const tree: Tree = new Tree()
 
@@ -39,7 +40,7 @@ const boardConfig: BoardConfig = {
 }
 
 function pieceMoved(move: MoveEvent) {
-  if (movesData.value != null) selectedMove.value = movesData.value.moves.filter(m => m.san === move.san)[0]
+  selectedMove.value = movesData.value!.moves.filter(m => m.san === move.san)[0]
 }
 
 function drawArrow(move: Move) {
@@ -61,7 +62,7 @@ function resetBoard() {
   boardAPI.resetBoard()
   moveSequence.value = ''
   submitButtonCallback = submitMove
-  message.value = 'Välj öppningsdrag'
+  userFeedback.value = { message: 'Välj öppningsdrag', color: 'primary', icon: "mdi-information", buttonText: "Välj drag"}
   tree.resetMoveSequence()
 }
 
@@ -79,26 +80,26 @@ function submitAndReset() {
 }
 
 function confirmVariationSaved() {
-  message.value = "Variant sparad"
+  userFeedback.value = { message: 'Variant sparad', color: 'info', icon: "mdi-check", buttonText: "OK"}
   submitButtonCallback = submitAndReset
 }
 
 function guessMove() {
   if (tree.hasNextMove(selectedMove.value!)) {
-    message.value = "Rätt drag!"
+    userFeedback.value = { message: 'Rätt!', color: 'success', icon: 'mdi-star-face', buttonText: "Fortsätt"}
     submitButtonCallback = submitMove
   } else {
-    message.value = "Fel!"
+    userFeedback.value = { message: 'Fel! Rätt drag var...', color: 'error', icon: 'mdi-alert', buttonText: "Fortsätt"}
     submitButtonCallback = resetBoard
   }
 }
 
 function determineState() {
   if (tree.hasMoves()) {
-    message.value = "Vilket drag spelar du nu?"
+    userFeedback.value = { message: 'Vilket drag spelar du nu?', color: 'info', icon: 'mdi-head-question', buttonText: "Välj drag"}
     submitButtonCallback = guessMove
   } else {
-    message.value = "Välj motdrag"
+    userFeedback.value = { message: 'Välj motdrag', color: 'primary', icon: "mdi-information", buttonText: "Välj drag"}
     submitButtonCallback = confirmVariationSaved
   }
 }
@@ -122,7 +123,7 @@ const undoMove = () => {
 </script>
 
 <template>
-  {{ message }}
+  {{ userFeedback }}
   <TheChessboard :board-config="boardConfig" @board-created="(api) => (boardAPI = api)"
     @move="(move) => pieceMoved(move)" />
 
@@ -130,7 +131,7 @@ const undoMove = () => {
     <v-btn v-for="move in movesData.moves" :key="move.san" @click="previewMove(move)" @mouseover="drawArrow(move)"
       @mouseout="removeArrows()">{{ move.san }} {{ getTotalNumberOfGames(move) }}
     </v-btn>
-    <v-btn @click="submitButtonCallback">Välj drag</v-btn>
+    <v-btn @click="submitButtonCallback">{{ userFeedback.buttonText }}</v-btn>
     <v-btn @click="undoMove">Ångra drag</v-btn>
   </div>
 </template>
