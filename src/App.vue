@@ -34,8 +34,6 @@ function initGame(newBoard: BoardApi) {
   
 }
 
-
-
 </script>
 
 <template>
@@ -45,11 +43,11 @@ function initGame(newBoard: BoardApi) {
 
   <div v-if="movesData/* && turn.color == orientation*/">
     <v-btn v-for="move in movesData.moves" :key="move.san" @click="gameplay.previewMove(move)"
-      @mouseover="board.drawMove(gameplay.getFrom(move), gameplay.getTo(move), 'green')" @mouseout="board.hideMoves()">{{
+      @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()">{{
         move.san }} {{ getTotalNumberOfGames(move) }}
     </v-btn>
     <v-btn @click="gameplay.submitButtonCallback()">{{ userFeedback.buttonText }}</v-btn>
-    <v-btn @click="board.undoLastMove()">Ångra drag</v-btn>
+    <v-btn @click="gameplay.undoLastMove()">Ångra drag</v-btn>
   </div>
 </template>
 
