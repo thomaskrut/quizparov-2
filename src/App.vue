@@ -13,8 +13,8 @@ import { getTotalNumberOfGames, getRandomMove } from './utils/utils'
 import { useFetchMovesData } from './useFetchMovesData'
 import { Tree } from './types/Tree'
 
-const orientation = ref<BoardConfig['orientation']>('white')
-const turn = ref<Turn>(new Turn(orientation.value))
+const orientation = ref<BoardConfig['orientation']>('black')
+const turn = ref<Turn>(new Turn('white'))
 const moveSequence = ref<string>('')
 const movesData = useFetchMovesData(moveSequence)
 const selectedMove = ref<Move | null>(null)
@@ -60,6 +60,7 @@ function previewMove(move: Move) {
 
 function resetBoard() {
   boardAPI.resetBoard()
+  turn.value = new Turn('white')
   moveSequence.value = ''
   submitButtonCallback = submitMove
   userFeedback.value = { message: 'Välj öppningsdrag', color: 'primary', icon: "mdi-information", buttonText: "Välj drag"}
@@ -123,7 +124,7 @@ const undoMove = () => {
 </script>
 
 <template>
-  {{ userFeedback }}
+  {{ userFeedback.message }}
   <TheChessboard :board-config="boardConfig" @board-created="(api) => (boardAPI = api)"
     @move="(move) => pieceMoved(move)" />
 
