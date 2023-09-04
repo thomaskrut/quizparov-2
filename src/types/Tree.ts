@@ -3,13 +3,13 @@ import type { MoveNode } from "./MoveNode"
 
 export class Tree {
 
-    root: MoveNode = {move: null, children: []}
+    root: MoveNode = { move: null, children: [] }
     moveSequence: Array<Move> = []
 
     addMove(move: Move) {
         const currentNode = this.getCurrentNode()
-        if (currentNode.children.find(node => node.move?.uci === move.uci) === undefined) {
-            currentNode.children.push({move: move, children: []})
+        if (currentNode.children.find(node => node.move?.san === move.san) === undefined) {
+            currentNode.children.push({ move: move, children: [] })
         }
         this.moveSequence.push(move)
     }
@@ -17,9 +17,9 @@ export class Tree {
     getCurrentNode(): MoveNode {
         let currentNode = this.root
         this.moveSequence.forEach(move => {
-           if (currentNode.children.length > 0) {
-               currentNode = currentNode.children.filter(node => node.move?.uci === move.uci)[0] as MoveNode ?? currentNode
-           }
+            if (currentNode.children.length > 0) {
+                currentNode = currentNode.children.filter(node => node.move?.san === move.san)[0] as MoveNode ?? currentNode
+            }
         })
         return currentNode
     }
@@ -29,7 +29,7 @@ export class Tree {
     }
 
     hasNextMove(move: Move): boolean {
-        return this.getCurrentNode().children.find(node => node.move?.uci === move.uci) !== undefined
+        return this.getCurrentNode().children.find(node => node.move?.san === move.san) !== undefined
     }
 
     resetMoveSequence() {

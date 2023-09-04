@@ -14,7 +14,7 @@ let board: BoardApi
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value)
 
-const { movesData, userFeedback } = gameplay.useGameplayData()
+const { movesData, userFeedback, submitButtonStatus } = gameplay.useGameplayData()
 
 const boardConfig: BoardConfig = {
   coordinates: true,
@@ -46,7 +46,7 @@ function initGame(newBoard: BoardApi) {
       @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()">{{
         move.san }} {{ getTotalNumberOfGames(move) }}
     </v-btn>
-    <v-btn @click="gameplay.submitButtonCallback()">{{ userFeedback.buttonText }}</v-btn>
+    <v-btn @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus">{{ userFeedback.buttonText }}</v-btn>
     <v-btn @click="gameplay.undoLastMove()">Ångra drag</v-btn>
   </div>
 </template>

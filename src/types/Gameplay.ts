@@ -2,7 +2,7 @@ import type { BoardApi, BoardConfig } from "vue3-chessboard";
 import type { Move } from "./Move";
 import { type MoveEvent } from "vue3-chessboard";
 import { useFetchMovesData } from "@/fetch";
-import { ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { Turn } from "./Turn";
 import { getRandomMove } from "@/utils/utils";
 
@@ -18,6 +18,7 @@ export class GameplayApi {
   private selectedMove: Move | null = null;
   private moveSequence = ref<string>("");
   private movesData = useFetchMovesData(this.moveSequence);
+  private submitButtonDisabled = ref<boolean>(true);
   private userFeedback = ref<UserFeedback>({
     message: "Välj öppningsdrag",
     color: "primary",
@@ -30,10 +31,7 @@ export class GameplayApi {
   constructor(orientation: BoardConfig["orientation"]) {
     this.orientation = orientation;
     watchEffect(() => {
-      if (
-        this.turn.value.color != this.orientation &&
-        this.movesData.value != undefined
-      ) {
+      if (this.turn.value.color != this.orientation && this.movesData.value != undefined) {
         this.selectedMove = getRandomMove(this.movesData.value.moves, 2);
         this.board?.move(this.selectedMove.san);
         this.submitMove();
@@ -42,7 +40,7 @@ export class GameplayApi {
   }
 
   useGameplayData() {
-    return { movesData: this.movesData, userFeedback: this.userFeedback };
+    return { movesData: this.movesData, userFeedback: this.userFeedback, submitButtonStatus: this.submitButtonDisabled };
   }
 
   setBoard(board: BoardApi) {
@@ -61,24 +59,36 @@ export class GameplayApi {
 
   undoLastMove() {
     this.board?.undoLastMove();
+    this.submitButtonDisabled.value = true;
   }
 
   submitMove() {
     this.tree.addMove(this.selectedMove!);
     this.moveSequence.value = this.tree.getMoveSequence();
     this.turn.value.toggle();
+    this.submitButtonDisabled.value = true;
     if (this.turn.value.color == this.orientation) this.determineState();
   }
 
   pieceMoved(move: MoveEvent) {
-    this.selectedMove = this.movesData.value!.moves.filter(
-      (m) => m.san === move.san
-    )[0];
+    this.selectedMove = this.movesData.value!.moves.filter((m) => m.san === move.san)[0] ?? null;
+    if (this.selectedMove === null) {
+      this.userFeedback.value = {
+        message: "Draget finns ej i databasen! Välj ett annat drag",
+        color: "error",
+        icon: "mdi-alert",
+        buttonText: "Välj drag",
+      };
+      this.submitButtonDisabled.value = true;
+    } else {
+      this.submitButtonDisabled.value = false;
+    }
   }
 
   previewMove(move: Move) {
     this.board?.move(move.san);
     this.selectedMove = move;
+    this.submitButtonDisabled.value = false;
   }
 
   private resetBoard() {
@@ -93,6 +103,7 @@ export class GameplayApi {
       buttonText: "Välj drag",
     };
     this.tree.resetMoveSequence();
+    this.submitButtonDisabled.value = true;
   }
 
   private confirmVariationSaved() {
@@ -131,7 +142,7 @@ export class GameplayApi {
   }
 
   private guessMove() {
-    console.log(this.selectedMove)
+    console.log(this.selectedMove);
     if (this.tree.hasNextMove(this.selectedMove!)) {
       this.userFeedback.value = {
         message: "Rätt!",
