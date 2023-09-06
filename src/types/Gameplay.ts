@@ -2,7 +2,7 @@ import type { BoardApi, BoardConfig } from "vue3-chessboard";
 import type { Move } from "./Move";
 import { type MoveEvent } from "vue3-chessboard";
 import { useFetchMovesData } from "@/fetch";
-import { computed, ref, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import { Turn } from "./Turn";
 import { getRandomMove } from "@/utils/utils";
 
@@ -31,9 +31,9 @@ export class GameplayApi {
   constructor(orientation: BoardConfig["orientation"]) {
     this.orientation = orientation;
     watchEffect(() => {
-      if (this.turn.value.color != this.orientation && this.movesData.value != undefined) {
+      if (this.turn.value.color != this.orientation && this.movesData.value != undefined && this.board != null) {
         this.selectedMove = getRandomMove(this.movesData.value.moves, 2);
-        this.board?.move(this.selectedMove.san);
+        this.board.move(this.selectedMove.san);
         this.submitMove();
       }
     });

@@ -42,10 +42,12 @@ function initGame(newBoard: BoardApi) {
     @move="(move) => gameplay.pieceMoved(move)" />
 
   <div v-if="movesData/* && turn.color == orientation*/">
+    <div v-if="userFeedback.message != 'Vilket drag spelar du nu?'">
     <v-btn v-for="move in movesData.moves" :key="move.san" @click="gameplay.previewMove(move)"
       @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()">{{
         move.san }} {{ getTotalNumberOfGames(move) }}
     </v-btn>
+  </div>
     <v-btn @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus">{{ userFeedback.buttonText }}</v-btn>
     <v-btn @click="gameplay.undoLastMove()">Ångra drag</v-btn>
   </div>
