@@ -8,7 +8,7 @@ import { GameplayApi } from './types/Gameplay'
 import { State } from './types/State'
 import LineViewer from './components/LineViewer.vue'
 
-const orientation = ref<BoardConfig['orientation']>('black')
+const orientation = ref<BoardConfig['orientation']>('white')
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value)
 
@@ -70,13 +70,13 @@ const undoButtonDisabled = computed(() => {
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
-        <v-col>
+      <v-row no-gutters justify="center" style="height: 26px">
+        <v-col cols="4" class="px-6">
           <LineViewer :line="currentLine" />
         </v-col>
       </v-row>
 
-      <v-row no-gutters justify="center" align="center">
+      <v-row no-gutters justify="center">
 
         <v-col cols="4">
           <v-row no-gutters>
