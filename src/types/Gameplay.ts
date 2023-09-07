@@ -5,10 +5,11 @@ import { useFetchMovesData } from "@/fetch";
 import { ref, watchEffect } from "vue";
 import { Turn } from "./Turn";
 import { getRandomMove } from "@/utils/utils";
+import { State } from "./State";
 
 import type { Square } from "chess.js";
 import { Tree } from "./Tree";
-import type { UserFeedback } from "./UserFeedback";
+import { UserFeedback } from "./UserFeedback";
 
 export class GameplayApi {
   private turn = ref<Turn>(new Turn("white"));
@@ -19,12 +20,7 @@ export class GameplayApi {
   private moveSequence = ref<string>("");
   private movesData = useFetchMovesData(this.moveSequence);
   private submitButtonDisabled = ref<boolean>(true);
-  private userFeedback = ref<UserFeedback>({
-    message: "Välj öppningsdrag",
-    color: "primary",
-    icon: "mdi-information",
-    buttonText: "Välj drag",
-  });
+  private userFeedback = ref<UserFeedback>(new UserFeedback());
 
   submitButtonCallback = this.submitMove;
 
@@ -46,6 +42,7 @@ export class GameplayApi {
   setBoard(board: BoardApi) {
     this.board = board;
   }
+  
 
   drawMove(move: Move) {
     const from = move.uci.slice(0, 2) as Square;
@@ -60,6 +57,7 @@ export class GameplayApi {
   undoLastMove() {
     this.board?.undoLastMove();
     this.submitButtonDisabled.value = true;
+    this.userFeedback.value.setState(this.userFeedback.value.previousState);
   }
 
   submitMove() {
@@ -73,12 +71,7 @@ export class GameplayApi {
   pieceMoved(move: MoveEvent) {
     this.selectedMove = this.movesData.value!.moves.filter((m) => m.san === move.san)[0] ?? null;
     if (this.selectedMove === null) {
-      this.userFeedback.value = {
-        message: "Draget finns ej i databasen! Välj ett annat drag",
-        color: "error",
-        icon: "mdi-alert",
-        buttonText: "Välj drag",
-      };
+      this.userFeedback.value.setState(State.MoveNotInDb);
       this.submitButtonDisabled.value = true;
     } else {
       this.submitButtonDisabled.value = false;
@@ -96,23 +89,13 @@ export class GameplayApi {
     this.turn.value = new Turn("white");
     this.moveSequence.value = "";
     this.submitButtonCallback = this.submitMove;
-    this.userFeedback.value = {
-      message: "Välj öppningsdrag",
-      color: "primary",
-      icon: "mdi-information",
-      buttonText: "Välj drag",
-    };
+    this.userFeedback.value.setState(State.OpeningMove);
     this.tree.resetMoveSequence();
     this.submitButtonDisabled.value = true;
   }
 
   private confirmVariationSaved() {
-    this.userFeedback.value = {
-      message: "Variant sparad",
-      color: "info",
-      icon: "mdi-check",
-      buttonText: "OK",
-    };
+    this.userFeedback.value.setState(State.LineSaved);
     this.submitButtonCallback = this.submitAndReset;
   }
 
@@ -123,20 +106,10 @@ export class GameplayApi {
 
   private determineState() {
     if (this.tree.hasMoves()) {
-      this.userFeedback.value = {
-        message: "Vilket drag spelar du nu?",
-        color: "info",
-        icon: "mdi-head-question",
-        buttonText: "Välj drag",
-      };
+      this.userFeedback.value.setState(State.GuessMove);
       this.submitButtonCallback = this.guessMove;
     } else {
-      this.userFeedback.value = {
-        message: "Välj motdrag",
-        color: "primary",
-        icon: "mdi-information",
-        buttonText: "Välj drag",
-      };
+      this.userFeedback.value.setState(State.CounterMove);
       this.submitButtonCallback = this.confirmVariationSaved;
     }
   }
@@ -144,20 +117,10 @@ export class GameplayApi {
   private guessMove() {
     console.log(this.selectedMove);
     if (this.tree.hasNextMove(this.selectedMove!)) {
-      this.userFeedback.value = {
-        message: "Rätt!",
-        color: "success",
-        icon: "mdi-star-face",
-        buttonText: "Fortsätt",
-      };
+      this.userFeedback.value.setState(State.CorrectMove);
       this.submitButtonCallback = this.submitMove;
     } else {
-      this.userFeedback.value = {
-        message: "Fel! Rätt drag var...",
-        color: "error",
-        icon: "mdi-alert",
-        buttonText: "Fortsätt",
-      };
+      this.userFeedback.value.setState(State.WrongMove);
       this.submitButtonCallback = this.resetBoard;
     }
   }

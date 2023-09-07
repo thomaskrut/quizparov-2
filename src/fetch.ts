@@ -18,7 +18,7 @@ export function useFetchMovesData(pathVar: Ref<string>) {
         return { movesData }
       }
       console.log('API call')
-      fetch('https://explorer.lichess.ovh/masters?moves=10&topGames=0&play=' + toValue(newPathVar))
+      fetch('https://explorer.lichess.ovh/masters?moves=8&topGames=0&play=' + toValue(newPathVar))
         .then((res) => res.json())
         .then((json) => {
           movesData.value = {

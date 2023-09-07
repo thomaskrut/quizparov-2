@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { TheChessboard } from 'vue3-chessboard'
+import WinGraph from './components/WinGraph.vue' 
 import 'vue3-chessboard/style.css'
-import { BoardApi, type BoardConfig } from 'vue3-chessboard'
+import { type BoardConfig } from 'vue3-chessboard'
 import { GameplayApi } from './types/Gameplay'
 
 import { getTotalNumberOfGames } from './utils/utils'
-import type { MovesData } from './types/MovesData'
+import { State } from './types/State'
 
 const orientation = ref<BoardConfig['orientation']>('white')
-
-let board: BoardApi
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value)
 
@@ -28,27 +27,24 @@ const boardConfig: BoardConfig = {
   },
 }
 
-function initGame(newBoard: BoardApi) {
-  gameplay.setBoard(newBoard)
-  board = newBoard
-  
-}
-
 </script>
 
 <template>
+  <v-icon :icon=userFeedback.icon></v-icon>
   {{ userFeedback.message }}
-  <TheChessboard :board-config="boardConfig" @board-created="(boardApi) => initGame(boardApi)"
+  <TheChessboard :board-config="boardConfig" @board-created="(boardApi) => gameplay.setBoard(boardApi)"
     @move="(move) => gameplay.pieceMoved(move)" />
 
-  <div v-if="movesData/* && turn.color == orientation*/">
-    <div v-if="userFeedback.message != 'Vilket drag spelar du nu?'">
+  <div v-if="movesData">
+    <span v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)">
     <v-btn v-for="move in movesData.moves" :key="move.san" @click="gameplay.previewMove(move)"
       @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()">{{
         move.san }} {{ getTotalNumberOfGames(move) }}
+        <WinGraph :move="move" />
     </v-btn>
-  </div>
-    <v-btn @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus">{{ userFeedback.buttonText }}</v-btn>
+
+  </span>
+    <v-btn @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon start icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.buttonText }}</v-btn>
     <v-btn @click="gameplay.undoLastMove()">Ångra drag</v-btn>
   </div>
 </template>
