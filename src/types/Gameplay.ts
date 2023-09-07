@@ -16,7 +16,7 @@ export class GameplayApi {
   private tree: Tree = new Tree();
   private board: BoardApi | null = null;
   private orientation: BoardConfig["orientation"];
-  private selectedMove: Move | null = null;
+  private selectedMove = ref<Move | null>(null);
   private moveSequence = ref<string>("");
   private movesData = useFetchMovesData(this.moveSequence);
   private submitButtonDisabled = ref<boolean>(true);
@@ -28,15 +28,16 @@ export class GameplayApi {
     this.orientation = orientation;
     watchEffect(() => {
       if (this.turn.value.color != this.orientation && this.movesData.value != undefined && this.board != null) {
-        this.selectedMove = getRandomMove(this.movesData.value.moves, 2);
-        this.board.move(this.selectedMove.san);
+        this.selectedMove.value = getRandomMove(this.movesData.value.moves, 2);
+        this.board.move(this.selectedMove.value.san);
         this.submitMove();
+        this.selectedMove.value = null;
       }
     });
   }
 
   useGameplayData() {
-    return { movesData: this.movesData, userFeedback: this.userFeedback, submitButtonStatus: this.submitButtonDisabled };
+    return { movesData: this.movesData, userFeedback: this.userFeedback, submitButtonStatus: this.submitButtonDisabled, selectedMove: this.selectedMove };
   }
 
   setBoard(board: BoardApi) {
@@ -57,11 +58,12 @@ export class GameplayApi {
   undoLastMove() {
     this.board?.undoLastMove();
     this.submitButtonDisabled.value = true;
+    this.selectedMove.value = null;
     this.userFeedback.value.setState(this.userFeedback.value.previousState);
   }
 
   submitMove() {
-    this.tree.addMove(this.selectedMove!);
+    this.tree.addMove(this.selectedMove.value!);
     this.moveSequence.value = this.tree.getMoveSequence();
     this.turn.value.toggle();
     this.submitButtonDisabled.value = true;
@@ -69,7 +71,7 @@ export class GameplayApi {
   }
 
   pieceMoved(move: MoveEvent) {
-    this.selectedMove = this.movesData.value!.moves.filter((m) => m.san === move.san)[0] ?? null;
+    this.selectedMove.value = this.movesData.value!.moves.filter((m) => m.san === move.san)[0] ?? null;
     if (this.selectedMove === null) {
       this.userFeedback.value.setState(State.MoveNotInDb);
       this.submitButtonDisabled.value = true;
@@ -80,11 +82,13 @@ export class GameplayApi {
 
   previewMove(move: Move) {
     this.board?.move(move.san);
-    this.selectedMove = move;
+    this.selectedMove.value = move;
     this.submitButtonDisabled.value = false;
+    this.hideMoves();
   }
 
   private resetBoard() {
+    this.selectedMove.value = null;
     this.board?.resetBoard();
     this.turn.value = new Turn("white");
     this.moveSequence.value = "";
@@ -100,7 +104,7 @@ export class GameplayApi {
   }
 
   private submitAndReset() {
-    this.tree.addMove(this.selectedMove!);
+    this.tree.addMove(this.selectedMove.value!);
     this.resetBoard();
   }
 
@@ -116,7 +120,7 @@ export class GameplayApi {
 
   private guessMove() {
     console.log(this.selectedMove);
-    if (this.tree.hasNextMove(this.selectedMove!)) {
+    if (this.tree.hasNextMove(this.selectedMove.value!)) {
       this.userFeedback.value.setState(State.CorrectMove);
       this.submitButtonCallback = this.submitMove;
     } else {

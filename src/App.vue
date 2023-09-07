@@ -14,7 +14,7 @@ const orientation = ref<BoardConfig['orientation']>('white')
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value)
 
-const { movesData, userFeedback, submitButtonStatus } = gameplay.useGameplayData()
+const { movesData, userFeedback, submitButtonStatus, selectedMove } = gameplay.useGameplayData()
 
 const boardConfig: BoardConfig = {
   coordinates: true,
@@ -38,27 +38,25 @@ const boardConfig: BoardConfig = {
     </v-app-bar>
     <v-main>
 
-      <v-row justify="center" no-gutters>
-        <v-col cols="12" justify="center">
+      <v-row no-gutters>
+        <v-col cols="12">
           <v-icon :icon=userFeedback.icon></v-icon>
           {{ userFeedback.message }}
         </v-col>
       </v-row>
 
-      <v-row justify="center" no-gutters>
-        <v-col cols="6">
+      <v-row no-gutters>
+        <v-col cols="5">
           <TheChessboard :board-config="boardConfig" @board-created="(boardApi) => gameplay.setBoard(boardApi)"
             @move="(move) => gameplay.pieceMoved(move)"
             style="width: 80vh"/>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="2">
           <div v-if="movesData">
-            <span v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)">
-
-              <MoveButtons :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)" @drawMove="(move) => gameplay.drawMove(move)"
+      
+              <MoveButtons v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove) && (selectedMove == null)" :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)" @drawMove="(move) => gameplay.drawMove(move)"
                 @hideMoves="gameplay.hideMoves()" />
 
-            </span>
           </div>
         </v-col>
       </v-row>
