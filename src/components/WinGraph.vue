@@ -8,7 +8,7 @@ const { move } = defineProps(['move'])
 const whiteWins = ref((move.white / getTotalNumberOfGames(move) * 100).toFixed(0) + '%')
 const draws = ref((move.draws / getTotalNumberOfGames(move) * 100).toFixed(0) + '%')
 const blackWins = ref((move.black / getTotalNumberOfGames(move) * 100).toFixed(0) + '%')
-console.log(whiteWins.value)
+
 
 </script>
 

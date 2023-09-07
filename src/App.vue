@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { computed, ref, type StyleValue } from 'vue'
+import { computed, ref } from 'vue'
 import { TheChessboard } from 'vue3-chessboard'
-import WinGraph from './components/WinGraph.vue'
 import MoveButtons from './components/MoveButtons.vue'
 import 'vue3-chessboard/style.css'
 import { type BoardConfig } from 'vue3-chessboard'
 import { GameplayApi } from './types/Gameplay'
-
-import { getTotalNumberOfGames } from './utils/utils'
 import { State } from './types/State'
+import LineViewer from './components/LineViewer.vue'
 
 const orientation = ref<BoardConfig['orientation']>('black')
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value)
 
-const { movesData, userFeedback, submitButtonStatus, selectedMove } = gameplay.useGameplayData()
+const { movesData, userFeedback, submitButtonStatus, selectedMove, currentLine } = gameplay.useGameplayData()
 
 const boardConfig: BoardConfig = {
   coordinates: true,
@@ -69,6 +67,12 @@ const undoButtonDisabled = computed(() => {
               @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 
           </div>
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+        <v-col>
+          <LineViewer :line="currentLine" />
         </v-col>
       </v-row>
 

@@ -5,7 +5,7 @@ import { type Move } from '@/types/Move'
 
 const props = defineProps<{
     line: Array<Move>,
-    selectedMove?: Move,
+    selectedMove?: Move | null,
 }>()
     
 const lineWithMoveCount = computed(() => {
@@ -33,7 +33,7 @@ const nextMoveCount = computed(() => {
         <span v-for="move in lineWithMoveCount" :key="move.san">
             <b class="text-disabled font-weight-thin">{{ move.moveCount }}</b> {{ move.san }} {{ ' ' }}
         </span>
-        <span v-if="selectedMove"><b class="text-disabled font-weight-thin">{{ nextMoveCount }}</b> {{ selectedMove.san }}?</span>
+        <!--<span v-if="selectedMove"><b class="text-disabled font-weight-thin">{{ nextMoveCount }}</b> {{ selectedMove.san }}?</span>-->
    
 </div>
 </template>
