@@ -32,13 +32,13 @@ function hideMoves() {
 
     <v-container style="height: 100%">
 
-        <v-virtual-scroll :items="movesData.moves" max-height="480">
+        <v-virtual-scroll :items="movesData.moves" max-height="380">
 
             <template v-slot:default="{ item }">
 
                 <v-item-group selected-class="bg-primary" v-model="selectedButtonUci">
                     <v-item v-slot="{ selectedClass, toggle }" :value="item.uci">
-                        <v-card :class="['ma-2', selectedClass]" elevation="6" @click="{ toggle; previewMove(item) }" @mouseover="drawMove(item)" @mouseout="hideMoves()">
+                        <v-card :disabled="selectedMove != null" :class="['ma-2', selectedClass]" elevation="6" @click="{ toggle; previewMove(item) }" @mouseover="drawMove(item)" @mouseout="hideMoves()">
 
                             <v-card-item>
                                 <v-card-title>{{ item.san }}</v-card-title>

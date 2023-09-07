@@ -72,7 +72,8 @@ export class GameplayApi {
 
   pieceMoved(move: MoveEvent) {
     this.selectedMove.value = this.movesData.value!.moves.filter((m) => m.san === move.san)[0] ?? null;
-    if (this.selectedMove === null) {
+    console.log(this.selectedMove.value)
+    if (this.selectedMove.value === null) {
       this.userFeedback.value.setState(State.MoveNotInDb);
       this.submitButtonDisabled.value = true;
     } else {

@@ -5,7 +5,7 @@ export class UserFeedback {
     message: string = ''
     previousState: State = State.OpeningMove
     icon: "mdi-information" | "mdi-alert" | "mdi-check" | "mdi-star-face" | "mdi-head-question" = "mdi-information"
-    color: "primary" | "error" | "success" | "info" = "primary"
+    color: string | "primary" | "error" | "success" | "info" = "primary"
     buttonText: "OK" | "Välj drag" | "Fortsätt" = "OK"
 
     constructor() {

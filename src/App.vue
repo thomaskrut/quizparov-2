@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, type StyleValue } from 'vue'
 import { TheChessboard } from 'vue3-chessboard'
 import WinGraph from './components/WinGraph.vue'
 import MoveButtons from './components/MoveButtons.vue'
@@ -32,42 +32,52 @@ const boardConfig: BoardConfig = {
 
 <template>
   <v-app>
-    <v-app-bar color="primary" density="compact" elevation="2">
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-      <v-app-bar-title>Title</v-app-bar-title>
-    </v-app-bar>
+
     <v-main>
 
       <v-row no-gutters>
-        <v-col cols="12">
-          <v-icon :icon=userFeedback.icon></v-icon>
-          {{ userFeedback.message }}
+        <v-col cols="4" class="pa-7">
+          
+          <v-alert :color="userFeedback.color" :icon="userFeedback.icon" :title="userFeedback.message">
+          </v-alert>
+      
+        </v-col>
+        <v-col cols="2">
+          
+       
+      
         </v-col>
       </v-row>
 
       <v-row no-gutters>
-        <v-col cols="5">
+        <v-col cols="4">
           <TheChessboard :board-config="boardConfig" @board-created="(boardApi) => gameplay.setBoard(boardApi)"
-            @move="(move) => gameplay.pieceMoved(move)"
-            style="width: 80vh"/>
+            @move="(move) => gameplay.pieceMoved(move)" style="width: 70vh" />
         </v-col>
         <v-col cols="2">
           <div v-if="movesData">
-      
-              <MoveButtons v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove) && (selectedMove == null)" :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)" @drawMove="(move) => gameplay.drawMove(move)"
-                @hideMoves="gameplay.hideMoves()" />
+
+            <MoveButtons v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
+              :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)"
+              @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 
           </div>
         </v-col>
       </v-row>
 
-
-      
-
-      
-        <v-btn block @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon start
+      <v-row no-gutters>
+        
+        <v-col cols="4">
+          <v-btn block @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus" class="ma-4"><v-icon start
             icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.buttonText }}</v-btn>
-        <v-btn @click="gameplay.undoLastMove()">Ångra drag</v-btn>
+        <v-btn block @click="gameplay.undoLastMove()" class="ma-4"
+          :disabled="submitButtonStatus && userFeedback.state != State.MoveNotInDb">Ångra drag</v-btn>
+        </v-col>
+  
+        <v-col cols="2" class="pa-7">
+        
+        </v-col>
+      </v-row>
 
     </v-main>
   </v-app>
