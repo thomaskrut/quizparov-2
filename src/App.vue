@@ -29,7 +29,7 @@ const boardConfig: BoardConfig = {
 }
 
 const undoButtonDisabled = computed(() => {
-  return userFeedback.value.state == State.MoveNotInDb || userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.LineSaved
+  return (selectedMove.value == null && userFeedback.value.state != State.MoveNotInDb) || (userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.LineSaved)
 })
 
 </script>
@@ -75,14 +75,15 @@ const undoButtonDisabled = computed(() => {
       <v-row no-gutters justify="center" align="center">
 
         <v-col cols="4">
-          <v-row no-gutters justify="center">
-            <v-col cols="5" align="center">
-              <v-btn size="large" @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon start
+          <v-row no-gutters>
+            <v-col cols="6" align="center">
+              <v-btn style="width: 80%" size="large" @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon start
                   icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.buttonText }}</v-btn>
             </v-col>
-            <v-col cols="5" align="center">
-              <v-btn size="large" @click="gameplay.undoLastMove()"
-                :disabled="submitButtonStatus || undoButtonDisabled">Ångra drag</v-btn>
+            <v-col cols="6" align="center">
+              <v-btn style="width: 80%" size="large" @click="gameplay.undoLastMove()"
+                :disabled="undoButtonDisabled"><v-icon start
+                icon="mdi-undo"></v-icon>Ångra drag</v-btn>
             </v-col>
           </v-row>
         </v-col>
