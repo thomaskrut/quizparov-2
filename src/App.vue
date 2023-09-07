@@ -10,7 +10,7 @@ import { GameplayApi } from './types/Gameplay'
 import { getTotalNumberOfGames } from './utils/utils'
 import { State } from './types/State'
 
-const orientation = ref<BoardConfig['orientation']>('white')
+const orientation = ref<BoardConfig['orientation']>('black')
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value)
 
@@ -35,25 +35,28 @@ const boardConfig: BoardConfig = {
 
     <v-main>
 
-      <v-row no-gutters>
-        <v-col cols="4" class="pa-7">
-          
-          <v-alert :color="userFeedback.color" :icon="userFeedback.icon" :title="userFeedback.message">
+      <v-row no-gutters justify="center" align="center">
+        <v-col cols="4" class="pa-6">
+
+          <v-alert density="comfortable" :color="userFeedback.color" :icon="userFeedback.icon"
+            :title="userFeedback.message">
           </v-alert>
-      
+
         </v-col>
-        <v-col cols="2">
-          
-       
-      
-        </v-col>
+
       </v-row>
 
-      <v-row no-gutters>
+      <v-row no-gutters justify="center" align="center">
+
+        <v-col cols="2">
+
+        </v-col>
+
         <v-col cols="4">
           <TheChessboard :board-config="boardConfig" @board-created="(boardApi) => gameplay.setBoard(boardApi)"
             @move="(move) => gameplay.pieceMoved(move)" style="width: 70vh" />
         </v-col>
+
         <v-col cols="2">
           <div v-if="movesData">
 
@@ -65,18 +68,21 @@ const boardConfig: BoardConfig = {
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
-        
+      <v-row no-gutters justify="center" align="center">
+
         <v-col cols="4">
-          <v-btn block @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus" class="ma-4"><v-icon start
-            icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.buttonText }}</v-btn>
-        <v-btn block @click="gameplay.undoLastMove()" class="ma-4"
-          :disabled="submitButtonStatus && userFeedback.state != State.MoveNotInDb">Ångra drag</v-btn>
+          <v-row no-gutters justify="center">
+            <v-col cols="5" align="center">
+              <v-btn size="large" @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon start
+                  icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.buttonText }}</v-btn>
+            </v-col>
+            <v-col cols="5" align="center">
+              <v-btn size="large" @click="gameplay.undoLastMove()"
+                :disabled="submitButtonStatus && userFeedback.state != State.MoveNotInDb">Ångra drag</v-btn>
+            </v-col>
+          </v-row>
         </v-col>
-  
-        <v-col cols="2" class="pa-7">
-        
-        </v-col>
+
       </v-row>
 
     </v-main>

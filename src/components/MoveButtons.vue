@@ -30,9 +30,9 @@ function hideMoves() {
 
 <template>
 
-    <v-container style="height: 100%">
+    
 
-        <v-virtual-scroll :items="movesData.moves" max-height="380">
+        <v-virtual-scroll :items="movesData.moves" max-height="60vh">
 
             <template v-slot:default="{ item }">
 
@@ -55,7 +55,7 @@ function hideMoves() {
 
         </v-virtual-scroll>
 
-    </v-container>
+  
 
 <!--
     <v-btn block v-for="move in movesData.moves" :key="move.san" @click="previewMove(move)"

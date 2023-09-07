@@ -59,7 +59,7 @@ export class GameplayApi {
     this.board?.undoLastMove();
     this.submitButtonDisabled.value = true;
     this.selectedMove.value = null;
-    this.userFeedback.value.setState(this.userFeedback.value.previousState);
+    if (this.userFeedback.value.state == State.MoveNotInDb) this.userFeedback.value.setState(this.userFeedback.value.previousState);
   }
 
   submitMove() {
@@ -125,7 +125,9 @@ export class GameplayApi {
       this.userFeedback.value.setState(State.CorrectMove);
       this.submitButtonCallback = this.submitMove;
     } else {
-      this.userFeedback.value.setState(State.WrongMove);
+      const correctMove = this.tree.getCurrentNode().children[0].move!;
+      this.userFeedback.value.setState(State.WrongMove, correctMove.san);
+      this.drawMove(correctMove)
       this.submitButtonCallback = this.resetBoard;
     }
   }

@@ -6,13 +6,13 @@ export class UserFeedback {
     previousState: State = State.OpeningMove
     icon: "mdi-information" | "mdi-alert" | "mdi-check" | "mdi-star-face" | "mdi-head-question" = "mdi-information"
     color: string | "primary" | "error" | "success" | "info" = "primary"
-    buttonText: "OK" | "Välj drag" | "Fortsätt" = "OK"
+    buttonText: "OK" | "Välj drag" | "Fortsätt" | "Börja om" = "OK"
 
     constructor() {
         this.setState(State.OpeningMove)
     }
 
-    setState(newState: State) {
+    setState(newState: State, message?: string) {
         this.previousState = this.state
         this.state = newState
         switch (this.state) {
@@ -53,10 +53,10 @@ export class UserFeedback {
                 this.buttonText = "Fortsätt"
                 break
             case State.WrongMove:
-                this.message = "Fel! Rätt drag var..."
+                this.message = "Fel! Rätt drag var " + message
                 this.icon = "mdi-alert"
                 this.color = "error"
-                this.buttonText = "Fortsätt"
+                this.buttonText = "Börja om"
                 break
         }
     }
