@@ -60,7 +60,4 @@ export class UserFeedback {
                 break
         }
     }
-
-
-
 }

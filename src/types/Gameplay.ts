@@ -99,14 +99,10 @@ export class GameplayApi {
     this.submitButtonDisabled.value = true;
   }
 
-  private confirmVariationSaved() {
+  private saveVariation() {
     this.userFeedback.value.setState(State.LineSaved);
-    this.submitButtonCallback = this.submitAndReset;
-  }
-
-  private submitAndReset() {
     this.tree.addMove(this.selectedMove.value!);
-    this.resetBoard();
+    this.submitButtonCallback = this.resetBoard;
   }
 
   private determineState() {
@@ -115,7 +111,7 @@ export class GameplayApi {
       this.submitButtonCallback = this.guessMove;
     } else {
       this.userFeedback.value.setState(State.CounterMove);
-      this.submitButtonCallback = this.confirmVariationSaved;
+      this.submitButtonCallback = this.saveVariation;
     }
   }
 

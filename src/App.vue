@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type StyleValue } from 'vue'
+import { computed, ref, type StyleValue } from 'vue'
 import { TheChessboard } from 'vue3-chessboard'
 import WinGraph from './components/WinGraph.vue'
 import MoveButtons from './components/MoveButtons.vue'
@@ -27,6 +27,10 @@ const boardConfig: BoardConfig = {
     enabled: false
   },
 }
+
+const undoButtonDisabled = computed(() => {
+  return userFeedback.value.state == State.MoveNotInDb || userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.LineSaved
+})
 
 </script>
 
@@ -78,7 +82,7 @@ const boardConfig: BoardConfig = {
             </v-col>
             <v-col cols="5" align="center">
               <v-btn size="large" @click="gameplay.undoLastMove()"
-                :disabled="submitButtonStatus && userFeedback.state != State.MoveNotInDb">Ångra drag</v-btn>
+                :disabled="submitButtonStatus || undoButtonDisabled">Ångra drag</v-btn>
             </v-col>
           </v-row>
         </v-col>
