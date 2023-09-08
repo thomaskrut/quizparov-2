@@ -1,46 +1,8 @@
 # quizparov-2
 
-This template should help get you started developing with Vue 3 in Vite.
+Quizparov 2 is an experimental chess openings trainer. It's based on the three pillars of mastering any art: repetition, repetition, and more repetition. It's designed to be easy to use, requiring no setup regarding which lines to practice - you can basically just start picking moves and the system will quiz you to assess whether you can remember which move to play in each position. Any wrong choice is severely punished, requiring the player to start over from move one, as a way to reinforce memorization.
 
-## Recommended IDE Setup
+Quizparov 2 utilizes [Lichess API](https://lichess.org/api) for fetching data about the statistics of possible moves, as well as the [vue3-chessboard](https://github.com/qwerty084/vue3-chessboard) component for representing the chess board. In addition, the Vuetify component framework is used 
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+![bild](https://github.com/thomaskrut/quizparov-2/assets/109295151/6cb0113f-e6e4-40ec-8a02-f29431eb8e2d)
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
