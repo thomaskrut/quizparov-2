@@ -41,5 +41,9 @@ export class Tree {
         return this.moveSequence.value.map(move => move.uci).join(",");
     }
 
+    isEmpty(): boolean {
+        return this.root.children.length === 0
+    }
+
 
 }

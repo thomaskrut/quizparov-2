@@ -8,7 +8,7 @@ import { GameplayApi } from './types/Gameplay'
 import { State } from './types/State'
 import LineViewer from './components/LineViewer.vue'
 
-const orientation = ref<BoardConfig['orientation']>('white')
+const orientation = ref<BoardConfig['orientation']>('black')
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value)
 
