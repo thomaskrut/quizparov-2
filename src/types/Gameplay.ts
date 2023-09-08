@@ -1,8 +1,8 @@
 import type { BoardApi, BoardConfig } from "vue3-chessboard";
 import type { Move } from "./Move";
 import { type MoveEvent } from "vue3-chessboard";
-import { useFetchMovesData } from "@/fetch";
-import { ref, watchEffect } from "vue";
+import { fetchMovesData } from "@/fetch";
+import { ref } from "vue";
 import { Turn } from "./Turn";
 import { getRandomMove } from "@/utils/utils";
 import { State } from "./State";
@@ -10,6 +10,7 @@ import { State } from "./State";
 import type { Square } from "chess.js";
 import { Tree } from "./Tree";
 import { UserFeedback } from "./UserFeedback";
+import type { MovesData } from "./MovesData";
 
 export class GameplayApi {
   private turn = ref<Turn>(new Turn("white"));
@@ -18,7 +19,7 @@ export class GameplayApi {
   private orientation: BoardConfig["orientation"];
   private selectedMove = ref<Move | null>(null);
   private moveSequence = ref<string>("");
-  private movesData = useFetchMovesData(this.moveSequence);
+  private movesData = ref<MovesData | null>(null)
   private submitButtonDisabled = ref<boolean>(true);
   private userFeedback = ref<UserFeedback>(new UserFeedback());
 
@@ -26,13 +27,8 @@ export class GameplayApi {
 
   constructor(orientation: BoardConfig["orientation"]) {
     this.orientation = orientation;
-    watchEffect(() => {
-      if (this.turn.value.color != this.orientation && this.movesData.value != null && this.board != null) {
-        this.selectedMove.value = getRandomMove(this.movesData.value.moves, 2);
-        this.board.move(this.selectedMove.value.san);
-        this.submitMove();
-        this.selectedMove.value = null;
-      }
+    fetchMovesData(this.moveSequence.value).then((movesData) => {
+      this.movesData.value = movesData;
     });
   }
 
@@ -68,7 +64,19 @@ export class GameplayApi {
     this.moveSequence.value = this.tree.getMoveSequence();
     this.turn.value.toggle();
     this.submitButtonDisabled.value = true;
-    if (this.turn.value.color == this.orientation) this.determineState();
+    fetchMovesData(this.moveSequence.value).then((movesData) => {
+      this.movesData.value = movesData;
+      
+    if (this.turn.value.color == this.orientation) {
+      this.determineState();
+     } else {
+      this.selectedMove.value = getRandomMove(this.movesData.value!.moves, 2);
+      this.board!.move(this.selectedMove.value.san);
+      this.submitMove();
+      this.selectedMove.value = null;
+    }
+    });
+    
   }
 
   pieceMoved(move: MoveEvent) {
@@ -97,6 +105,9 @@ export class GameplayApi {
     this.userFeedback.value.setState(State.OpeningMove);
     this.tree.resetMoveSequence();
     this.submitButtonDisabled.value = true;
+    fetchMovesData(this.moveSequence.value).then((movesData) => {
+      this.movesData.value = movesData;
+    });
   }
 
   private saveVariation() {

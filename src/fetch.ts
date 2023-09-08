@@ -3,32 +3,26 @@ import { toValue, watch, ref } from 'vue'
 import type { Ref } from 'vue'
 import type { MovesData } from "./types/MovesData";
 
-export function useFetchMovesData(pathVar: Ref<string>) {
+const moveCache = new Map<string, MovesData>(null)
 
-    const movesData = ref<MovesData | null>()
-    const moveCache = new Map<string, MovesData>(null)
-  
-    watch(pathVar, (newPathVar) => {
-  
-      movesData.value = null
-      
-      if (moveCache.has(toValue(newPathVar))) {
-        console.log('cached response')
-        movesData.value = moveCache.get(toValue(newPathVar))
-        return { movesData }
-      }
-      console.log('API call')
-      fetch('https://explorer.lichess.ovh/masters?moves=20&topGames=0&play=' + toValue(newPathVar))
-        .then((res) => res.json())
-        .then((json) => {
-          movesData.value = {
-            opening: json.opening?.name,
-            moves: json.moves
-          }
-          moveCache.set(toValue(newPathVar), movesData.value)
-        }).catch((err) => (console.log(err)))
-    }, { immediate: true })
-  
-    return movesData
+export async function fetchMovesData(pathVar: string): Promise<MovesData | null> {
+
+  if (moveCache.has(pathVar)) {
+    console.log('cached response')
+
+    return moveCache.get(pathVar) ?? null
   }
-        
+  console.log('API call')
+
+  const response = await fetch('https://explorer.lichess.ovh/masters?moves=20&topGames=0&play=' + pathVar)
+  const json = await response.json()
+  const movesData: MovesData = {
+    opening: json.opening?.name,
+    moves: json.moves
+  }
+  moveCache.set(pathVar, movesData)
+  return movesData
+}
+
+
+
