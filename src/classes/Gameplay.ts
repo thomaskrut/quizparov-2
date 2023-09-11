@@ -3,7 +3,7 @@ import type { Move } from "../types/Move";
 import { type MoveEvent } from "vue3-chessboard";
 import { fetchMovesData } from "../fetch";
 import { ref } from "vue";
-import { Turn } from "../classes/Turn"
+import { Turn } from "./Turn"
 import { getRandomMove } from "../utils/utils";
 import { State } from "../types/State";
 
@@ -90,15 +90,17 @@ export class GameplayApi {
   }
 
   private playNextTurn() {
-    this.selectedMove.value = null;
-    fetchMovesData(this.tree.getMoveSequence()).then((movesData) => {
-      this.movesData.value = movesData;
-      if (this.turn.color == this.orientation) {
-        this.determineState();
-      } else {
-        this.makeComputerMove();
-      }
-    });
+    setTimeout(() => {
+      this.selectedMove.value = null;
+      fetchMovesData(this.tree.getMoveSequence()).then((movesData) => {
+        this.movesData.value = movesData;
+        if (this.turn.color == this.orientation) {
+          this.determineState();
+        } else {
+          this.makeComputerMove();
+        }
+      });
+    }, 500);
   }
 
   private makeComputerMove() {
