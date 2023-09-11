@@ -4,5 +4,12 @@ Quizparov 2 is an experimental chess openings trainer. It's based on the three p
 
 Quizparov 2 utilizes [Lichess API](https://lichess.org/api) for fetching data about the statistics of possible moves, as well as the [vue3-chessboard](https://github.com/qwerty084/vue3-chessboard) component for representing the chess board.
 
+Todo:  
+[ ] Visual representation of lines  
+[ ] Backend for handling user accounts and storing repertoires  
+[ ] Setting for number of moves considered by opponent  
+[ ] Setting for maximum depth  
+[ ] Option to select multiple moves in a position  
+
 ![bild](https://github.com/thomaskrut/quizparov-2/assets/109295151/6cb0113f-e6e4-40ec-8a02-f29431eb8e2d)
 
