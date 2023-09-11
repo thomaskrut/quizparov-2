@@ -1,16 +1,16 @@
 import type { BoardApi, BoardConfig } from "vue3-chessboard";
-import type { Move } from "./Move";
+import type { Move } from "../types/Move";
 import { type MoveEvent } from "vue3-chessboard";
-import { fetchMovesData } from "@/fetch";
+import { fetchMovesData } from "../fetch";
 import { ref } from "vue";
-import { Turn } from "./Turn";
-import { getRandomMove } from "@/utils/utils";
-import { State } from "./State";
+import { Turn } from "../classes/Turn"
+import { getRandomMove } from "../utils/utils";
+import { State } from "../types/State";
 
 import type { Square } from "chess.js";
 import { Tree } from "./Tree";
 import { UserFeedback } from "./UserFeedback";
-import type { MovesData } from "./MovesData";
+import type { MovesData } from "../types/MovesData";
 
 export class GameplayApi {
 
@@ -67,7 +67,7 @@ export class GameplayApi {
     this.selectedMove.value = this.movesData.value!.moves.filter((m) => m.san === move.san)[0] ?? null;
     if (this.selectedMove.value === null) {
       if (this.userFeedback.value.state == State.GuessMove) {
-        this.selectedMove.value = { san: '', uci: '', averateRating: 0, white: 0, draws: 0, black: 0, game: null };
+        this.selectedMove.value = this.getEmptyMoveObject();
         this.submitButtonDisabled.value = false;
       } else {
         this.userFeedback.value.setState(State.MoveNotInDb);
@@ -83,6 +83,10 @@ export class GameplayApi {
     this.selectedMove.value = move;
     this.submitButtonDisabled.value = false;
     this.hideMoves();
+  }
+
+  getEmptyMoveObject(): Move {
+    return { san: '', uci: '', averateRating: 0, white: 0, draws: 0, black: 0, game: null };
   }
 
   private playNextTurn() {
@@ -101,11 +105,9 @@ export class GameplayApi {
     this.selectedMove.value = getRandomMove(this.movesData.value!.moves, 2);
     this.board!.move(this.selectedMove.value.san);
     this.submitMove();
-    //this.selectedMove.value = null;
   }
 
   private resetBoard() {
-    //this.selectedMove.value = null;
     this.board?.resetBoard();
     this.turn = new Turn("white");
     this.submitButtonCallback = this.submitMove;

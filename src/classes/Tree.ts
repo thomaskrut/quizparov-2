@@ -1,6 +1,6 @@
 import { ref } from "vue"
-import type { Move } from "./Move"
-import type { MoveNode } from "./MoveNode"
+import type { Move } from "../types/Move"
+import type { MoveNode } from "../types/MoveNode"
 
 export class Tree {
 

@@ -4,7 +4,7 @@ import { TheChessboard } from 'vue3-chessboard'
 import MoveButtons from './components/MoveButtons.vue'
 import 'vue3-chessboard/style.css'
 import { type BoardConfig } from 'vue3-chessboard'
-import { GameplayApi } from './types/Gameplay'
+import { GameplayApi } from './classes/Gameplay'
 import { State } from './types/State'
 import LineViewer from './components/LineViewer.vue'
 
@@ -23,11 +23,11 @@ const boardConfig: BoardConfig = {
   },
   draggable: {
     enabled: false
-  },
+  }
 }
 
 const undoButtonDisabled = computed(() => {
-  return (selectedMove.value == null && userFeedback.value.state != State.MoveNotInDb) || (userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.LineSaved)
+  return selectedMove.value?.uci == '' || (selectedMove.value == null && userFeedback.value.state != State.MoveNotInDb) || (userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.LineSaved)
 })
 
 </script>
