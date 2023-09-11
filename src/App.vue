@@ -38,59 +38,55 @@ const undoButtonDisabled = computed(() => {
 
     <v-main>
 
-      <v-row no-gutters justify="center" align="center">
-        <v-col cols="4" class="pa-6">
 
-          <v-alert density="comfortable" :color="userFeedback.color" :icon="userFeedback.icon"
-            :title="userFeedback.feedback.message">
+      <v-row>
+
+        <v-col cols="auto">
+
+          <v-alert class="ma-3" density="compact" :color="userFeedback.color" :icon="userFeedback.icon"
+            :title="userFeedback.feedback.message" style="width: 60vh">
           </v-alert>
 
-        </v-col>
-
-      </v-row>
-
-      <v-row no-gutters justify="center" align="center">
-
-        <v-col cols="2">
-
-        </v-col>
-
-        <v-col cols="4">
           <TheChessboard :board-config="boardConfig" @board-created="(boardApi) => gameplay.setBoard(boardApi)"
-            @move="(move) => gameplay.pieceMoved(move)" style="width: 70vh" />
+            @move="(move) => gameplay.pieceMoved(move)" style="width: 60vh" />
+
+          <LineViewer :line="currentLine" class="ml-4" />
+
+          <v-btn block class="ma-2" style="width: 60vh" size="large" @click="gameplay.submitButtonCallback()"
+            :disabled="submitButtonStatus"><v-icon start icon="mdi-checkbox-marked-circle"></v-icon>{{
+              userFeedback.feedback.buttonText }}</v-btn>
+
+          <v-btn block class="ma-2" style="width: 60vh" size="large" @click="gameplay.undoLastMove()"
+            :disabled="undoButtonDisabled"><v-icon start icon="mdi-undo"></v-icon>{{ userFeedback.undoButtonText
+            }}</v-btn>
+
         </v-col>
 
-        <v-col cols="2">
-          <div v-if="movesData">
+        <v-col cols="auto">
+          
+          <span v-if="movesData">
 
             <MoveButtons v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
               :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)"
               @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 
-          </div>
+          </span>
+        </v-col>
+        <v-spacer></v-spacer>
+      </v-row>
+
+      <v-row style="height: 26px">
+        <v-col>
+
         </v-col>
       </v-row>
 
-      <v-row no-gutters justify="center" style="height: 26px">
-        <v-col cols="4" class="px-6">
-          <LineViewer :line="currentLine" />
-        </v-col>
-      </v-row>
+      <v-row>
 
-      <v-row no-gutters justify="center">
+        <v-col cols="auto">
 
-        <v-col cols="4">
-          <v-row no-gutters>
-            <v-col cols="6" align="center">
-              <v-btn style="width: 80%" size="large" @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon start
-                  icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.feedback.buttonText }}</v-btn>
-            </v-col>
-            <v-col cols="6" align="center">
-              <v-btn style="width: 80%" size="large" @click="gameplay.undoLastMove()"
-                :disabled="undoButtonDisabled"><v-icon start
-                icon="mdi-undo"></v-icon>{{ userFeedback.undoButtonText }}</v-btn>
-            </v-col>
-          </v-row>
+
+
         </v-col>
 
       </v-row>
