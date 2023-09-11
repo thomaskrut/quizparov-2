@@ -8,9 +8,10 @@ import { GameplayApi } from './classes/Gameplay'
 import { State } from './types/State'
 import LineViewer from './components/LineViewer.vue'
 
-const orientation = ref<BoardConfig['orientation']>('black')
+const orientation = ref<BoardConfig['orientation']>('white')
+const language = ref<string>('sv')
 
-let gameplay: GameplayApi = new GameplayApi(orientation.value)
+let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value)
 
 const { movesData, userFeedback, submitButtonStatus, selectedMove, currentLine } = gameplay.useGameplayData()
 
@@ -41,7 +42,7 @@ const undoButtonDisabled = computed(() => {
         <v-col cols="4" class="pa-6">
 
           <v-alert density="comfortable" :color="userFeedback.color" :icon="userFeedback.icon"
-            :title="userFeedback.message">
+            :title="userFeedback.feedback.message">
           </v-alert>
 
         </v-col>
@@ -82,12 +83,12 @@ const undoButtonDisabled = computed(() => {
           <v-row no-gutters>
             <v-col cols="6" align="center">
               <v-btn style="width: 80%" size="large" @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon start
-                  icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.buttonText }}</v-btn>
+                  icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.feedback.buttonText }}</v-btn>
             </v-col>
             <v-col cols="6" align="center">
               <v-btn style="width: 80%" size="large" @click="gameplay.undoLastMove()"
                 :disabled="undoButtonDisabled"><v-icon start
-                icon="mdi-undo"></v-icon>Ångra drag</v-btn>
+                icon="mdi-undo"></v-icon>{{ userFeedback.undoButtonText }}</v-btn>
             </v-col>
           </v-row>
         </v-col>
