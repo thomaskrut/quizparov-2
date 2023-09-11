@@ -32,7 +32,7 @@ function hideMoves() {
 
     
 
-        <v-virtual-scroll :items="movesData.moves" max-height="85vh" width="180px">
+        <v-virtual-scroll :items="movesData.moves" max-height="85vh">
 
             <template v-slot:default="{ item }">
 

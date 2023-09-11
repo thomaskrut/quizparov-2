@@ -44,25 +44,25 @@ const undoButtonDisabled = computed(() => {
         <v-col cols="auto">
 
           <v-alert class="ma-3" density="compact" :color="userFeedback.color" :icon="userFeedback.icon"
-            :title="userFeedback.feedback.message" style="width: 60vh">
+            :title="userFeedback.feedback.message" style="max-width: 60vh">
           </v-alert>
 
           <TheChessboard :board-config="boardConfig" @board-created="(boardApi) => gameplay.setBoard(boardApi)"
-            @move="(move) => gameplay.pieceMoved(move)" style="width: 60vh" />
+            @move="(move) => gameplay.pieceMoved(move)" style="max-width: 60vh" />
 
           <LineViewer :line="currentLine" class="ml-4" />
 
-          <v-btn block class="ma-2" style="width: 60vh" size="large" @click="gameplay.submitButtonCallback()"
+          <v-btn block class="ma-2" style="max-width: 60vw" size="large" @click="gameplay.submitButtonCallback()"
             :disabled="submitButtonStatus"><v-icon start icon="mdi-checkbox-marked-circle"></v-icon>{{
               userFeedback.feedback.buttonText }}</v-btn>
 
-          <v-btn block class="ma-2" style="width: 60vh" size="large" @click="gameplay.undoLastMove()"
+          <v-btn block class="ma-2" style="max-width: 60vw" size="large" @click="gameplay.undoLastMove()"
             :disabled="undoButtonDisabled"><v-icon start icon="mdi-undo"></v-icon>{{ userFeedback.undoButtonText
             }}</v-btn>
 
         </v-col>
 
-        <v-col cols="auto">
+        <v-col>
           
           <span v-if="movesData">
 
