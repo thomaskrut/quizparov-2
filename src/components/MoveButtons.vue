@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { MovesData } from '@/types/MovesData';
 import type { Move } from '@/types/Move';
-import WinGraph from './WinGraph.vue';
 import { ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -30,30 +29,19 @@ function hideMoves() {
 
 <template>
 
-    
+                <v-slide-group v-model="selectedButtonUci" selected-class="bg-success">
+                    <v-slide-group-item v-for="move in movesData.moves" :key="move.uci" :value="move.uci" v-slot="{ toggle, selectedClass }">
+                        <v-btn :disabled="selectedMove != null" :class="['ma-1', selectedClass]" @click="previewMove(move)" @mouseover="drawMove(move)" @mouseout="hideMoves()">
 
-        <v-virtual-scroll :items="movesData.moves" max-height="85vh">
+                      {{ move.san }}
+                           
 
-            <template v-slot:default="{ item }">
-
-                <v-item-group selected-class="bg-primary" v-model="selectedButtonUci">
-                    <v-item v-slot="{ selectedClass, toggle }" :value="item.uci">
-                        <v-card :disabled="selectedMove != null" :class="['ma-2', selectedClass]" elevation="6" @click="{ toggle; previewMove(item) }" @mouseover="drawMove(item)" @mouseout="hideMoves()">
-
-                            <v-card-item>
-                                <v-card-title>{{ item.san }}</v-card-title>
-                                <v-card-subtitle>
-                                    <WinGraph :move="item" />
-                                </v-card-subtitle>
-
-                            </v-card-item>
-
-                        </v-card>
-                    </v-item>
-                </v-item-group>
-            </template>
-
-        </v-virtual-scroll>
+                        </v-btn>
+                    </v-slide-group-item>
+          
+                </v-slide-group>
+{{ selectedButtonUci }}
+            
 
   
 
