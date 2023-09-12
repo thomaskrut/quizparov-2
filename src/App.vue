@@ -22,7 +22,7 @@ const boardConfig: BoardConfig = {
   orientation: orientation.value,
   animation: {
     enabled: true,
-    duration: 500,
+    duration: 800,
   },
   draggable: {
     enabled: false
