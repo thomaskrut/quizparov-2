@@ -31,9 +31,6 @@ const undoButtonDisabled = computed(() => {
   return selectedMove.value?.uci == '' || (selectedMove.value == null && userFeedback.value.state != State.MoveNotInDb) || (userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.LineSaved)
 })
 
-const showMoveButtons = computed(() => {
-  return userFeedback.value.state == State.OpeningMove || userFeedback.value.state == State.CounterMove
-})
 
 
 </script>
@@ -76,7 +73,7 @@ const showMoveButtons = computed(() => {
 
           <span v-if="movesData">
 
-            <MoveButtons v-if="showMoveButtons"
+            <MoveButtons v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
               :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)"
               @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 
