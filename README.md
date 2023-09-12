@@ -8,7 +8,7 @@ Todo:
 [ ] Language setting  
 [ ] Display name of opening  
 [ ] Visual representation of lines  
-[ ] Backend for handling user accounts and storing repertoires  
+[ ] Backend service for handling user accounts and storing repertoires  
 [ ] Setting for number of moves considered by opponent  
 [ ] Setting for maximum depth  
 [ ] Option to select multiple moves in a position  
