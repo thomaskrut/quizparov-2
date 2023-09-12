@@ -39,11 +39,7 @@ const undoButtonDisabled = computed(() => {
   <v-app>
 
     <v-main>
-
-   
-      <v-row>
-
-        <v-spacer></v-spacer>
+      <v-row justify="center">
         
         <v-col align="center" lg="4" md="5" sm="6">
 
@@ -79,7 +75,7 @@ const undoButtonDisabled = computed(() => {
 
           </span>
         </v-col>
-        <v-spacer></v-spacer>
+       
       </v-row>
  
     </v-main>
