@@ -67,7 +67,7 @@ const undoButtonDisabled = computed(() => {
             <v-spacer></v-spacer>
           </v-row>
 
-          <span v-if="movesData">
+          <span v-if="movesData" class="d-none d-sm-flex">
 
             <MoveButtons v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
               :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)"
