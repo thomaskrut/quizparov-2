@@ -11,7 +11,7 @@ import LineViewer from './components/LineViewer.vue'
 const orientation = ref<BoardConfig['orientation']>('white')
 const language = ref<string>('sv')
 
-const showMoveButtons = ref<boolean>(false)
+const showMoveButtons = ref<boolean>(true)
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value)
 
@@ -22,7 +22,7 @@ const boardConfig: BoardConfig = {
   orientation: orientation.value,
   animation: {
     enabled: true,
-    duration: 800,
+    duration: 500,
   },
   draggable: {
     enabled: false
@@ -35,42 +35,46 @@ const undoButtonDisabled = computed(() => {
 
 
 
+
 </script>
 
 <template>
   <v-app>
-    <v-app-bar
-    
-    height="48"
-    flat
-  >
 
+    <!--
+    <v-app-bar title="Quizparov 2" color="primary" density="compact" flat>
 
-    <v-switch class="mx-10" v-model="showMoveButtons" inset></v-switch>
+      <template v-slot:prepend>
+       
+        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      </template>
+
+      <template v-slot:append>
   
+      <v-switch :label="userFeedback.moveButtonsToggleText" v-model="showMoveButtons" hide-details inset></v-switch>
+     
+    </template>
+    
+    </v-app-bar>
+    -->
 
-</v-app-bar>
     <v-main>
       <v-row justify="center">
-        
-        <v-col align="center" lg="4" md="5" sm="6">
 
-          
+        <v-col align="center" lg="4" md="5" sm="6">
 
           <v-alert class="ma-1" :color="userFeedback.color" :icon="userFeedback.icon"
             :title="userFeedback.feedback.message">
           </v-alert>
 
           <TheChessboard :board-config="boardConfig" @board-created="(boardApi) => gameplay.setBoard(boardApi)"
-            @move="(move) => gameplay.pieceMoved(move)" class="w-auto"/>
-
-        
+            @move="(move) => gameplay.pieceMoved(move)" class="w-auto" />
 
           <v-row>
             <v-spacer></v-spacer>
             <v-col cols="5">
-              <v-btn class="ma-2" block @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon start
-                  icon="mdi-checkbox-marked-circle"></v-icon>{{
+              <v-btn class="ma-2" block @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon
+                  start icon="mdi-checkbox-marked-circle"></v-icon>{{
                     userFeedback.feedback.buttonText }}</v-btn>
             </v-col>
             <v-col cols="5">
@@ -83,15 +87,16 @@ const undoButtonDisabled = computed(() => {
 
           <span v-if="movesData">
 
-            <MoveButtons v-if="showMoveButtons && (userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
+            <MoveButtons
+              v-if="showMoveButtons && (userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
               :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)"
               @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 
           </span>
         </v-col>
-       
+
       </v-row>
- 
+
     </v-main>
   </v-app>
 </template>

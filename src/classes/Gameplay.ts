@@ -22,12 +22,12 @@ export class GameplayApi {
   private selectedMove = ref<Move | null>(null);
   private movesData = ref<MovesData | null>(null)
   private submitButtonDisabled = ref<boolean>(true);
-  private userFeedback = ref<UserFeedback>(new UserFeedback('sv'));
+  private userFeedback = ref<UserFeedback>(new UserFeedback());
 
   submitButtonCallback = this.submitMove;
 
   constructor(orientation: BoardConfig["orientation"], language: string) {
-    this.userFeedback.value.language = language
+    this.userFeedback.value.setLanguage(language);
     this.orientation = orientation;
     this.playNextTurn();
   }

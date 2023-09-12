@@ -6,24 +6,35 @@ export interface Feedback {
 }
 
 export class UserFeedback {
-    language: string
+    language: string = ''
     state: State = State.OpeningMove
     previousState = State.OpeningMove
     feedback: Feedback = { message: "", buttonText: "" }
     undoButtonText: string = ''
+    moveButtonsToggleText: string = ''
+    selectLanguageText: string = ''
     icon: "mdi-information" | "mdi-alert" | "mdi-check" | "mdi-star-face" | "mdi-head-question" = "mdi-information"
     color: string | "primary" | "error" | "success" | "info" = "primary"
     
 
-    constructor(setLanguage: string) {
+    constructor() {
         this.setState(State.OpeningMove)
-        this.language = setLanguage
-        switch (setLanguage) {
+        
+    }
+
+    setLanguage(language: string) {
+        this.language = language
+        this.language = language
+        switch (language) {
             case 'sv':
                 this.undoButtonText = 'Ångra drag'
+                this.moveButtonsToggleText = 'Visa drag'
+                this.selectLanguageText = 'Välj språk'
                 break
             case 'en':
                 this.undoButtonText = "Undo move"
+                this.moveButtonsToggleText = 'Show moves'
+                this.selectLanguageText = 'Select language'
                 break
         }
     }
