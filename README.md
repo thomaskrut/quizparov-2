@@ -13,5 +13,3 @@ Todo:
 [ ] Setting for maximum depth  
 [ ] Option to select multiple moves in a position  
 
-![bild](https://github.com/thomaskrut/quizparov-2/assets/109295151/6cb0113f-e6e4-40ec-8a02-f29431eb8e2d)
-
