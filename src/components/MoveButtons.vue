@@ -29,14 +29,14 @@ function hideMoves() {
 
 <template>
 
-                <v-item-group v-model="selectedButtonUci" selected-class="bg-success">
-                    <v-item v-for="move in movesData.moves" :key="move.uci" :value="move.uci" v-slot="{ selectedClass }">
+                <v-slide-group v-model="selectedButtonUci" selected-class="bg-success" show-arrows center-active>
+                    <v-slide-group-item v-for="move in movesData.moves" :key="move.uci" :value="move.uci" v-slot="{ selectedClass }">
                         <v-btn :disabled="selectedMove != null" :class="['ma-2', 'text-subtitle-2', selectedClass]" @click="previewMove(move)" @mouseover="drawMove(move)" @mouseout="hideMoves()">
                       {{ move.san }}
                         </v-btn>
-                    </v-item>
+                    </v-slide-group-item>
           
-                </v-item-group>
+                </v-slide-group>
 
 <!--
     <v-btn block v-for="move in movesData.moves" :key="move.san" @click="previewMove(move)"

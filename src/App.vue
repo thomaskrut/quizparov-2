@@ -11,6 +11,8 @@ import LineViewer from './components/LineViewer.vue'
 const orientation = ref<BoardConfig['orientation']>('white')
 const language = ref<string>('sv')
 
+const showMoveButtons = ref<boolean>(false)
+
 let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value)
 
 const { movesData, userFeedback, submitButtonStatus, selectedMove, currentLine } = gameplay.useGameplayData()
@@ -37,11 +39,23 @@ const undoButtonDisabled = computed(() => {
 
 <template>
   <v-app>
+    <v-app-bar
+    
+    height="48"
+    flat
+  >
 
+
+    <v-switch class="mx-10" v-model="showMoveButtons" inset></v-switch>
+  
+
+</v-app-bar>
     <v-main>
       <v-row justify="center">
         
         <v-col align="center" lg="4" md="5" sm="6">
+
+          
 
           <v-alert class="ma-1" :color="userFeedback.color" :icon="userFeedback.icon"
             :title="userFeedback.feedback.message">
@@ -67,9 +81,9 @@ const undoButtonDisabled = computed(() => {
             <v-spacer></v-spacer>
           </v-row>
 
-          <span v-if="movesData" class="d-none d-sm-flex">
+          <span v-if="movesData">
 
-            <MoveButtons v-if="(userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
+            <MoveButtons v-if="showMoveButtons && (userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
               :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)"
               @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 
