@@ -21,17 +21,13 @@ const lineWithMoveCount = computed(() => {
         })
 })
 
-const nextMoveCount = computed(() => {
-    return props.line.length % 2 == 0 ? props.line.length / 2 + 1 : Math.floor(props.line.length / 2) + 1
-})
-
 </script>
 
 <template>
     <div id="container">
 
         <span v-for="move in lineWithMoveCount" :key="move.san">
-            <b class="text-disabled font-weight-thin">{{ move.moveCount }}</b> {{ move.san }} {{ ' ' }}
+            <b class="text-caption">{{ move.moveCount }}</b> {{ move.san }} {{ ' ' }}
         </span>
         <!--<span v-if="selectedMove"><b class="text-disabled font-weight-thin">{{ nextMoveCount }}</b> {{ selectedMove.san }}?</span>-->
    

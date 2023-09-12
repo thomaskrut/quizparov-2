@@ -91,7 +91,7 @@ export class GameplayApi {
   }
 
   private playNextTurn() {
-    setTimeout(() => {
+    
       this.selectedMove.value = null;
       fetchMovesData(this.tree.getMoveSequence()).then((movesData) => {
         this.movesData.value = movesData;
@@ -101,7 +101,7 @@ export class GameplayApi {
           this.makeComputerMove();
         }
       });
-    }, 500);
+   
   }
 
   private makeComputerMove() {
