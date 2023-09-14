@@ -12,6 +12,7 @@ export class UserFeedback {
     feedback: Feedback = { message: "", buttonText: "" }
     undoButtonText: string = ''
     moveButtonsToggleText: string = ''
+    addMoveButtonText: string = ''
     selectLanguageText: string = ''
     icon: "mdi-information" | "mdi-alert" | "mdi-check" | "mdi-star-face" | "mdi-head-question" = "mdi-information"
     color: string | "primary" | "error" | "success" | "info" = "primary"
@@ -30,11 +31,13 @@ export class UserFeedback {
                 this.undoButtonText = 'Ångra drag'
                 this.moveButtonsToggleText = 'Visa drag'
                 this.selectLanguageText = 'Välj språk'
+                this.addMoveButtonText = 'Lägg till drag'
                 break
             case 'en':
                 this.undoButtonText = "Undo move"
                 this.moveButtonsToggleText = 'Show moves'
                 this.selectLanguageText = 'Select language'
+                this.addMoveButtonText = 'Add more moves'
                 break
         }
     }

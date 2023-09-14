@@ -35,6 +35,10 @@ const undoButtonDisabled = computed(() => {
   return selectedMove.value?.uci == '' || (selectedMove.value == null && userFeedback.value.state != State.MoveNotInDb) || (userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.LineSaved)
 })
 
+const showMoveDetails = computed(() => {
+  return userFeedback.value.state == State.OpeningMove || userFeedback.value.state == State.CounterMove
+})
+
 
 
 
@@ -76,13 +80,16 @@ const undoButtonDisabled = computed(() => {
             <v-spacer></v-spacer>
             <v-col cols="5">
               <v-btn variant="outlined" class="ma-2" block @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon
-                  start icon="mdi-checkbox-marked-circle"></v-icon>{{
-                    userFeedback.feedback.buttonText }}</v-btn>
+                  start icon="mdi-checkbox-marked-circle"></v-icon>{{ userFeedback.feedback.buttonText }}</v-btn>
             </v-col>
             <v-col cols="5">
-              <v-btn variant="outlined" class="ma-2" block @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start
-                  icon="mdi-undo"></v-icon>{{ userFeedback.undoButtonText
-                  }}</v-btn>
+              <v-btn v-if="userFeedback.state != State.LineSaved" variant="outlined" class="ma-2" block @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start
+                  icon="mdi-undo"></v-icon>{{ userFeedback.undoButtonText }}</v-btn>
+
+              <v-btn v-else variant="outlined" class="ma-2" block @click="gameplay.addAnotherMove()"><v-icon start
+                icon="mdi-plus"></v-icon>{{ userFeedback.addMoveButtonText }} </v-btn>
+
+
             </v-col>
             <v-spacer></v-spacer>
           </v-row>
@@ -98,7 +105,8 @@ const undoButtonDisabled = computed(() => {
         </v-col>
 
         <v-col>
-          <v-card class="mt-4" elevation="2" v-if="selectedMove != null" max-width="320">
+
+          <v-card class="mt-4" elevation="2" v-if="selectedMove != null && showMoveDetails" max-width="320">
             <v-card-item>
               <div>
                 <div class="text-overline mb-1">
@@ -134,6 +142,7 @@ const undoButtonDisabled = computed(() => {
             </v-card-actions>
           
           </v-card>
+          
         </v-col>
 
        

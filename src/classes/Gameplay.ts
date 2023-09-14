@@ -18,6 +18,7 @@ export class GameplayApi {
   private tree: Tree = new Tree();
   private board: BoardApi | null = null;
   private orientation: BoardConfig["orientation"];
+  private movesToAdd: Move[] = []
 
   private selectedMove = ref<Move | null>(null);
   private movesData = ref<MovesData | null>(null)
@@ -57,6 +58,12 @@ export class GameplayApi {
     if (this.userFeedback.value.state == State.MoveNotInDb) this.userFeedback.value.setState(this.userFeedback.value.previousState);
   }
 
+  addAnotherMove() {
+    this.userFeedback.value.setState(State.CounterMove);
+    this.submitButtonCallback = this.saveVariation;
+    this.undoLastMove()
+  }
+
   submitMove() {
     this.tree.addMove(this.selectedMove.value!);
     this.turn.toggle();
@@ -91,17 +98,17 @@ export class GameplayApi {
   }
 
   private playNextTurn() {
-    
-      this.selectedMove.value = null;
-      fetchMovesData(this.tree.getMoveSequence()).then((movesData) => {
-        this.movesData.value = movesData;
-        if (this.turn.color == this.orientation) {
-          this.determineState();
-        } else {
-          this.makeComputerMove();
-        }
-      });
-   
+
+    this.selectedMove.value = null;
+    fetchMovesData(this.tree.getMoveSequence()).then((movesData) => {
+      this.movesData.value = movesData;
+      if (this.turn.color == this.orientation) {
+        this.determineState();
+      } else {
+        this.makeComputerMove();
+      }
+    });
+
   }
 
   private makeComputerMove() {
@@ -119,10 +126,16 @@ export class GameplayApi {
     this.playNextTurn();
   }
 
+  private saveMovesAndReset() {
+    this.tree.addMoves(this.movesToAdd);
+    this.movesToAdd = [];
+    this.resetBoard();
+  }
+
   private saveVariation() {
     this.userFeedback.value.setState(State.LineSaved);
-    this.tree.addMove(this.selectedMove.value!);
-    this.submitButtonCallback = this.resetBoard;
+    this.movesToAdd.push(this.selectedMove.value!)
+    this.submitButtonCallback = this.saveMovesAndReset
   }
 
   private determineState() {
@@ -142,9 +155,13 @@ export class GameplayApi {
       this.userFeedback.value.setState(State.CorrectMove);
       this.submitButtonCallback = this.submitMove;
     } else {
-      const correctMove = this.tree.getCurrentNode().children[0].move!;
-      this.userFeedback.value.setState(State.WrongMove, correctMove.san);
-      this.drawMove(correctMove)
+      this.tree.getCurrentNode().children.forEach((child, index) => {
+        setTimeout(() => {
+          this.drawMove(child.move!)
+        }, index * 500)
+      })
+      this.userFeedback.value.setState(State.WrongMove, this.tree.getCurrentNode().children.map(c => c.move?.san).join(', '));
+
       this.submitButtonCallback = this.resetBoard;
     }
   }

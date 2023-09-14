@@ -15,6 +15,13 @@ export class Tree {
         this.moveSequence.value.push(move)
     }
 
+    addMoves(moves: Move[]) {
+        const currentNode = this.getCurrentNode()
+        moves.forEach(move => {
+            currentNode.children.push({move: move, children: []})
+        })
+    }
+
     getCurrentNode(): MoveNode {
         let currentNode = this.root
         this.moveSequence.value.forEach(move => {
