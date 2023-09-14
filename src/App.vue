@@ -75,12 +75,12 @@ const undoButtonDisabled = computed(() => {
           <v-row>
             <v-spacer></v-spacer>
             <v-col cols="5">
-              <v-btn class="ma-2" block @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon
+              <v-btn variant="outlined" class="ma-2" block @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon
                   start icon="mdi-checkbox-marked-circle"></v-icon>{{
                     userFeedback.feedback.buttonText }}</v-btn>
             </v-col>
             <v-col cols="5">
-              <v-btn class="ma-2" block @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start
+              <v-btn variant="outlined" class="ma-2" block @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start
                   icon="mdi-undo"></v-icon>{{ userFeedback.undoButtonText
                   }}</v-btn>
             </v-col>
@@ -98,7 +98,7 @@ const undoButtonDisabled = computed(() => {
         </v-col>
 
         <v-col>
-          <v-card class="mt-4" elevation="2" v-if="selectedMove != null" max-width="320" variant="outlined">
+          <v-card class="mt-4" elevation="2" v-if="selectedMove != null" max-width="320">
             <v-card-item>
               <div>
                 <div class="text-overline mb-1">
