@@ -19,6 +19,7 @@ export class GameplayApi {
   private board: BoardApi | null = null;
   private orientation: BoardConfig["orientation"];
   private movesToAdd: Move[] = []
+  private interval: number = 0
 
   private selectedMove = ref<Move | null>(null);
   private movesData = ref<MovesData | null>(null)
@@ -118,6 +119,7 @@ export class GameplayApi {
   }
 
   private resetBoard() {
+    clearInterval(this.interval)
     this.board?.resetBoard();
     this.turn = new Turn("white");
     this.submitButtonCallback = this.submitMove;
@@ -155,11 +157,16 @@ export class GameplayApi {
       this.userFeedback.value.setState(State.CorrectMove);
       this.submitButtonCallback = this.submitMove;
     } else {
-      this.tree.getCurrentNode().children.forEach((child, index) => {
-        setTimeout(() => {
-          this.drawMove(child.move!)
-        }, index * 500)
-      })
+      const drawFunc = () => {
+        this.tree.getCurrentNode().children.forEach((child, index) => {
+          setTimeout(() => {
+            this.drawMove(child.move!)
+          }, index * 500)
+        })
+      }
+      drawFunc()
+      this.interval = setInterval(drawFunc, this.tree.getCurrentNode().children.length * 500)
+      
       this.userFeedback.value.setState(State.WrongMove, this.tree.getCurrentNode().children.map(c => c.move?.san).join(', '));
 
       this.submitButtonCallback = this.resetBoard;
