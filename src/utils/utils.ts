@@ -9,3 +9,7 @@ export function getRandomMove(moves: Move[], number: number) {
     const randomNumber = Math.floor(Math.random() * number)
     return moves[randomNumber]
 }
+
+export function getPositionOfMove(moves: Move[], move: Move) {
+    return moves.indexOf(move)
+}

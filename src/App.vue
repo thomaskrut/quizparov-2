@@ -6,7 +6,9 @@ import 'vue3-chessboard/style.css'
 import { type BoardConfig } from 'vue3-chessboard'
 import { GameplayApi } from './classes/Gameplay'
 import { State } from './types/State'
+import WinGraph from './components/WinGraph.vue'
 import LineViewer from './components/LineViewer.vue'
+import { getTotalNumberOfGames, getPositionOfMove } from './utils/utils'
 
 const orientation = ref<BoardConfig['orientation']>('white')
 const language = ref<string>('sv')
@@ -60,7 +62,7 @@ const undoButtonDisabled = computed(() => {
 
     <v-main>
       <v-row justify="center">
-
+        <v-spacer></v-spacer>
         <v-col align="center" lg="4" md="5" sm="6">
 
           <v-alert class="ma-1" :color="userFeedback.color" :icon="userFeedback.icon"
@@ -94,6 +96,47 @@ const undoButtonDisabled = computed(() => {
 
           </span>
         </v-col>
+
+        <v-col>
+          <v-card class="mt-4" elevation="2" v-if="selectedMove != null" max-width="320" variant="outlined">
+            <v-card-item>
+              <div>
+                <div class="text-overline mb-1">
+                  Ditt drag
+                  <v-divider></v-divider>
+                </div>
+                <div class="text-h3 ma-4">
+                  {{ selectedMove?.san }}
+                </div>
+                <v-divider></v-divider>
+                <div class="text-caption">
+                  Antal partier: {{ getTotalNumberOfGames(selectedMove) }}
+                  ({{ getPositionOfMove(movesData!.moves, selectedMove) + 1 }}/{{ movesData?.moves.length }})
+                  <v-divider></v-divider>
+                  Vinst vit: {{ (selectedMove.white / getTotalNumberOfGames(selectedMove) * 100).toFixed(1) }}%
+                  <v-divider></v-divider>
+                  Vinst svart: {{ (selectedMove.black / getTotalNumberOfGames(selectedMove) * 100).toFixed(1) }}%
+                  <v-divider></v-divider>
+                  Remi: {{ (selectedMove.draws / getTotalNumberOfGames(selectedMove) * 100).toFixed(1) }}%
+                  <v-divider></v-divider>
+                  <WinGraph :move="selectedMove" />
+                </div>
+                
+              </div>
+            </v-card-item>
+            <v-card-actions>
+              <v-btn class="ma-2" variant="outlined" @click="gameplay.submitButtonCallback()" :disabled="submitButtonStatus"><v-icon
+                start icon="mdi-checkbox-marked-circle"></v-icon>{{
+                  userFeedback.feedback.buttonText }}</v-btn>
+                  <v-btn class="ma-2" variant="outlined" @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start
+                    icon="mdi-undo"></v-icon>{{ userFeedback.undoButtonText
+                    }}</v-btn>
+            </v-card-actions>
+          
+          </v-card>
+        </v-col>
+
+       
 
       </v-row>
 
