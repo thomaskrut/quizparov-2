@@ -5,5 +5,5 @@ export enum State {
     MoveNotInDb,
     CorrectMove,
     WrongMove,
-    LineSaved
+    MoveAdded
 }

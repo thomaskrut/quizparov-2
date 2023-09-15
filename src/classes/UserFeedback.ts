@@ -51,7 +51,7 @@ export class UserFeedback {
                         return { message: "Välj öppningsdrag", buttonText: "Välj drag" }
                     case State.CounterMove:
                         return { message: "Välj ett eller flera motdrag", buttonText: "Lägg till" }
-                    case State.LineSaved:
+                    case State.MoveAdded:
                         return { message: "Lagt till drag", buttonText: "Spara" }
                     case State.GuessMove:
                         return { message: "Vilket drag spelar du nu?", buttonText: "Välj drag" }
@@ -69,7 +69,7 @@ export class UserFeedback {
                         return { message: "Choose opening move", buttonText: "Select move" }
                     case State.CounterMove:
                         return { message: "Choose one or more counter moves", buttonText: "Add move" }
-                    case State.LineSaved:
+                    case State.MoveAdded:
                         return { message: "Move added", buttonText: "Save" }
                     case State.GuessMove:
                         return { message: "What move are you playing now?", buttonText: "Choose move" }
@@ -99,7 +99,7 @@ export class UserFeedback {
                 this.icon = "mdi-information"
                 this.color = "primary"
                 break
-            case State.LineSaved:
+            case State.MoveAdded:
                 this.icon = "mdi-check"
                 this.color = "info"
                 break

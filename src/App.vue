@@ -8,7 +8,7 @@ import { GameplayApi } from './classes/Gameplay'
 import { State } from './types/State'
 import WinGraph from './components/WinGraph.vue'
 import LineViewer from './components/LineViewer.vue'
-import { getTotalNumberOfGames, getPositionOfMove } from './utils/utils'
+import { getTotalNumberOfGames, getPositionOfMove, getPieceIcon } from './utils/utils'
 
 const orientation = ref<BoardConfig['orientation']>('white')
 const language = ref<string>('sv')
@@ -32,7 +32,7 @@ const boardConfig: BoardConfig = {
 }
 
 const undoButtonDisabled = computed(() => {
-  return selectedMove.value?.uci == '' || (selectedMove.value == null && userFeedback.value.state != State.MoveNotInDb) || (userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.LineSaved)
+  return selectedMove.value?.uci == '' || (selectedMove.value == null && userFeedback.value.state != State.MoveNotInDb) || (userFeedback.value.state == State.CorrectMove || userFeedback.value.state == State.WrongMove || userFeedback.value.state == State.MoveAdded)
 })
 
 const showMoveDetails = computed(() => {
@@ -84,7 +84,7 @@ const showMoveDetails = computed(() => {
                   userFeedback.feedback.buttonText }}</v-btn>
             </v-col>
             <v-col cols="5">
-              <v-btn v-if="userFeedback.state != State.LineSaved" variant="outlined" class="ma-2" block
+              <v-btn v-if="userFeedback.state != State.MoveAdded" variant="outlined" class="ma-2" block
                 @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start icon="mdi-undo"></v-icon>{{
                   userFeedback.undoButtonText }}</v-btn>
 
@@ -110,20 +110,25 @@ const showMoveDetails = computed(() => {
 
          
 
-          <v-card class="mt-4" elevation="2" v-for="move in movesToAdd" :key="move.uci" max-width="340">
+          <v-card class="mt-4" elevation="2" v-for="move in movesToAdd" :key="move.uci" max-width="340" @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()">
             
-            <template v-slot:append>
+            <template v-slot:prepend>
+              <v-icon size="x-large">
+                {{ getPieceIcon(move) }}
+              </v-icon>
+            </template>
+           
+              <template v-slot:title>
+                {{ move.san }}
+              </template>
+
+              <template v-slot:append>
               
                 <v-icon @click="gameplay.removeMove(move)">
                   mdi-minus-circle-outline
                 </v-icon>
              
             </template>
-              <template v-slot:title>
-                {{ move.san }}
-               
-               
-              </template>
            
             <v-card-text>
               <WinGraph :move="move" />
@@ -140,6 +145,9 @@ const showMoveDetails = computed(() => {
                   <v-divider></v-divider>
                 </div>
                 <div class="text-h3 ma-4">
+                  <v-icon>
+                    {{ getPieceIcon(selectedMove!) }}
+                  </v-icon>
                   {{ selectedMove?.san }}
                 </div>
                 <v-divider></v-divider>
@@ -160,12 +168,12 @@ const showMoveDetails = computed(() => {
             </v-card-item>
           </v-card>
 
-          <v-card class="mt-4" elevation="2" max-width="340" v-if="selectedMove != null">
+          <v-card class="mt-4" elevation="2" max-width="340" v-if="selectedMove != null && showMoveDetails">
             <v-card-actions>
               <v-btn class="ma-2" variant="outlined" @click="gameplay.submitButtonCallback()"
                 :disabled="submitButtonStatus"><v-icon start icon="mdi-checkbox-marked-circle"></v-icon>{{
                   userFeedback.feedback.buttonText }}</v-btn>
-              <v-btn v-if="userFeedback.state != State.LineSaved" class="ma-2" variant="outlined"
+              <v-btn v-if="userFeedback.state != State.MoveAdded" class="ma-2" variant="outlined"
                 @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start icon="mdi-undo"></v-icon>{{
                   userFeedback.undoButtonText
                 }}</v-btn>

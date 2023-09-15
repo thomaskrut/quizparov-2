@@ -4,7 +4,7 @@ import { type MoveEvent } from "vue3-chessboard";
 import { fetchMovesData } from "../fetch";
 import { ref } from "vue";
 import { Turn } from "./Turn"
-import { getRandomMove } from "../utils/utils";
+import { getRandomMove, getEmptyMoveObject } from "../utils/utils";
 import { State } from "../types/State";
 
 import type { Square } from "chess.js";
@@ -62,12 +62,13 @@ export class GameplayApi {
 
   addAnotherMove() {
     this.userFeedback.value.setState(State.CounterMove);
-    this.submitButtonCallback = this.saveVariation;
+    this.submitButtonCallback = this.addMove;
     this.undoLastMove()
   }
 
   removeMove(move: Move) {
     this.movesToAdd.value.indexOf(move) > -1 && this.movesToAdd.value.splice(this.movesToAdd.value.indexOf(move), 1);
+    if (this.movesToAdd.value.length == 0) this.submitButtonDisabled.value = true;
   }
 
   submitMove() {
@@ -81,7 +82,7 @@ export class GameplayApi {
     this.selectedMove.value = this.movesData.value!.moves.filter((m) => m.san === move.san)[0] ?? null;
     if (this.selectedMove.value === null) {
       if (this.userFeedback.value.state == State.GuessMove) {
-        this.selectedMove.value = this.getEmptyMoveObject();
+        this.selectedMove.value = getEmptyMoveObject();
         this.submitButtonDisabled.value = false;
       } else {
         this.userFeedback.value.setState(State.MoveNotInDb);
@@ -97,10 +98,6 @@ export class GameplayApi {
     this.selectedMove.value = move;
     this.submitButtonDisabled.value = false;
     this.hideMoves();
-  }
-
-  getEmptyMoveObject(): Move {
-    return { san: '', uci: '', averateRating: 0, white: 0, draws: 0, black: 0, game: null };
   }
 
   private playNextTurn() {
@@ -139,10 +136,10 @@ export class GameplayApi {
     this.resetBoard();
   }
 
-  private saveVariation() {
-    this.userFeedback.value.setState(State.LineSaved);
+  private addMove() {
+    this.userFeedback.value.setState(State.MoveAdded);
     this.movesToAdd.value.push(this.selectedMove.value!)
-    this.submitButtonCallback = this.saveMovesAndReset
+    this.submitButtonCallback = this.saveMovesAndReset;
   }
 
   private determineState() {
@@ -153,7 +150,7 @@ export class GameplayApi {
       this.submitButtonCallback = this.guessMove;
     } else {
       this.userFeedback.value.setState(State.CounterMove);
-      this.submitButtonCallback = this.saveVariation;
+      this.submitButtonCallback = this.addMove;
     }
   }
 
