@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { TheChessboard } from 'vue3-chessboard'
 import MoveButtons from './components/MoveButtons.vue'
+import MoveDetails from './components/MoveDetails.vue'
 import 'vue3-chessboard/style.css'
 import { type BoardConfig } from 'vue3-chessboard'
 import { GameplayApi } from './classes/Gameplay'
@@ -9,6 +10,7 @@ import { State } from './types/State'
 import WinGraph from './components/WinGraph.vue'
 import LineViewer from './components/LineViewer.vue'
 import { getTotalNumberOfGames, getPositionOfMove, getPieceIcon } from './utils/utils'
+import MoveCard from './components/MoveCard.vue'
 
 const orientation = ref<BoardConfig['orientation']>('white')
 const language = ref<string>('sv')
@@ -109,65 +111,13 @@ const showMoveDetails = computed(() => {
         <v-col>
 
          
+          <MoveCard v-for="move in movesToAdd" :key="move.uci" :move="move" @removeMove="gameplay.removeMove(move)" @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()"/>
 
-          <v-card class="mt-4" elevation="2" v-for="move in movesToAdd" :key="move.uci" max-width="340" @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()">
-            
-            <template v-slot:prepend>
-              <v-icon size="x-large">
-                {{ getPieceIcon(move) }}
-              </v-icon>
-            </template>
-           
-              <template v-slot:title>
-                {{ move.san }}
-              </template>
+          
+          <MoveDetails v-if="selectedMove != null && showMoveDetails" :selected-move="selectedMove" :moves-data="movesData"/>
 
-              <template v-slot:append>
-              
-                <v-icon @click="gameplay.removeMove(move)">
-                  mdi-minus-circle-outline
-                </v-icon>
-             
-            </template>
-           
-            <v-card-text>
-              <WinGraph :move="move" />
-            </v-card-text>
-            
-
-          </v-card>
-
-          <v-card class="mt-4" elevation="2" v-if="selectedMove != null && showMoveDetails" max-width="340">
-            <v-card-item>
-              <div>
-                <div class="text-overline mb-1">
-                  Ditt drag
-                  <v-divider></v-divider>
-                </div>
-                <div class="text-h3 ma-4">
-                  <v-icon>
-                    {{ getPieceIcon(selectedMove!) }}
-                  </v-icon>
-                  {{ selectedMove?.san }}
-                </div>
-                <v-divider></v-divider>
-                <div class="text-caption">
-                  Antal partier: {{ getTotalNumberOfGames(selectedMove) }}
-                  ({{ getPositionOfMove(movesData!.moves, selectedMove) + 1 }}/{{ movesData?.moves.length }})
-                  <v-divider></v-divider>
-                  Vinst vit: {{ (selectedMove.white / getTotalNumberOfGames(selectedMove) * 100).toFixed(1) }}%
-                  <v-divider></v-divider>
-                  Vinst svart: {{ (selectedMove.black / getTotalNumberOfGames(selectedMove) * 100).toFixed(1) }}%
-                  <v-divider></v-divider>
-                  Remi: {{ (selectedMove.draws / getTotalNumberOfGames(selectedMove) * 100).toFixed(1) }}%
-                  <v-divider></v-divider>
-                  <WinGraph :move="selectedMove" />
-                </div>
-
-              </div>
-            </v-card-item>
-          </v-card>
-
+          
+          <!--Buttons right panel-->
           <v-card class="mt-4" elevation="2" max-width="340" v-if="selectedMove != null && showMoveDetails">
             <v-card-actions>
               <v-btn class="ma-2" variant="outlined" @click="gameplay.submitButtonCallback()"
