@@ -50,9 +50,9 @@ export class UserFeedback {
                     case State.OpeningMove:
                         return { message: "Välj öppningsdrag", buttonText: "Välj drag" }
                     case State.CounterMove:
-                        return { message: "Välj motdrag", buttonText: "Lägg till" }
+                        return { message: "Välj ett eller flera motdrag", buttonText: "Lägg till" }
                     case State.LineSaved:
-                        return { message: "Variant sparad", buttonText: "Fortsätt" }
+                        return { message: "Lagt till drag", buttonText: "Spara" }
                     case State.GuessMove:
                         return { message: "Vilket drag spelar du nu?", buttonText: "Välj drag" }
                     case State.MoveNotInDb:
@@ -68,9 +68,9 @@ export class UserFeedback {
                     case State.OpeningMove:
                         return { message: "Choose opening move", buttonText: "Select move" }
                     case State.CounterMove:
-                        return { message: "Choose counter move", buttonText: "Add move" }
+                        return { message: "Choose one or more counter moves", buttonText: "Add move" }
                     case State.LineSaved:
-                        return { message: "Line saved", buttonText: "Continue" }
+                        return { message: "Move added", buttonText: "Save" }
                     case State.GuessMove:
                         return { message: "What move are you playing now?", buttonText: "Choose move" }
                     case State.MoveNotInDb:

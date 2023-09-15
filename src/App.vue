@@ -108,17 +108,27 @@ const showMoveDetails = computed(() => {
 
         <v-col>
 
-          <v-card class="mt-4" elevation="2" v-if="movesToAdd.length > 0" max-width="340">
-            <v-card-item>
-              Dina drag:
-            </v-card-item>
-          </v-card>
+         
 
           <v-card class="mt-4" elevation="2" v-for="move in movesToAdd" :key="move.uci" max-width="340">
-
-            <v-card-item>
-              {{ move.san }}
-            </v-card-item>
+            
+            <template v-slot:append>
+              
+                <v-icon @click="gameplay.removeMove(move)">
+                  mdi-minus-circle-outline
+                </v-icon>
+             
+            </template>
+              <template v-slot:title>
+                {{ move.san }}
+               
+               
+              </template>
+           
+            <v-card-text>
+              <WinGraph :move="move" />
+            </v-card-text>
+            
 
           </v-card>
 

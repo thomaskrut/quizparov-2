@@ -66,6 +66,10 @@ export class GameplayApi {
     this.undoLastMove()
   }
 
+  removeMove(move: Move) {
+    this.movesToAdd.value.indexOf(move) > -1 && this.movesToAdd.value.splice(this.movesToAdd.value.indexOf(move), 1);
+  }
+
   submitMove() {
     this.tree.addMove(this.selectedMove.value!);
     this.turn.toggle();
