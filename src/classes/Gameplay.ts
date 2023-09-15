@@ -18,9 +18,10 @@ export class GameplayApi {
   private tree: Tree = new Tree();
   private board: BoardApi | null = null;
   private orientation: BoardConfig["orientation"];
-  private movesToAdd: Move[] = []
+  
   private interval: number = 0
 
+  private movesToAdd = ref<Move[]>([]);
   private selectedMove = ref<Move | null>(null);
   private movesData = ref<MovesData | null>(null)
   private submitButtonDisabled = ref<boolean>(true);
@@ -35,7 +36,7 @@ export class GameplayApi {
   }
 
   useGameplayData() {
-    return { movesData: this.movesData, userFeedback: this.userFeedback, submitButtonStatus: this.submitButtonDisabled, selectedMove: this.selectedMove, currentLine: this.tree.moveSequence };
+    return { movesData: this.movesData, userFeedback: this.userFeedback, submitButtonStatus: this.submitButtonDisabled, selectedMove: this.selectedMove, currentLine: this.tree.moveSequence, movesToAdd: this.movesToAdd };
   }
 
   setBoard(board: BoardApi) {
@@ -129,14 +130,14 @@ export class GameplayApi {
   }
 
   private saveMovesAndReset() {
-    this.tree.addMoves(this.movesToAdd);
-    this.movesToAdd = [];
+    this.tree.addMoves(this.movesToAdd.value);
+    this.movesToAdd.value = [];
     this.resetBoard();
   }
 
   private saveVariation() {
     this.userFeedback.value.setState(State.LineSaved);
-    this.movesToAdd.push(this.selectedMove.value!)
+    this.movesToAdd.value.push(this.selectedMove.value!)
     this.submitButtonCallback = this.saveMovesAndReset
   }
 
@@ -167,7 +168,7 @@ export class GameplayApi {
       drawFunc()
       this.interval = setInterval(drawFunc, this.tree.getCurrentNode().children.length * 500)
       
-      this.userFeedback.value.setState(State.WrongMove, this.tree.getCurrentNode().children.map(c => c.move?.san).join(', '));
+      this.userFeedback.value.setState(State.WrongMove, this.tree.getCurrentNode().children.map(c => c.move?.san).join(', eller '));
 
       this.submitButtonCallback = this.resetBoard;
     }

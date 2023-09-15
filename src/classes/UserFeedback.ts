@@ -31,7 +31,7 @@ export class UserFeedback {
                 this.undoButtonText = 'Ångra drag'
                 this.moveButtonsToggleText = 'Visa drag'
                 this.selectLanguageText = 'Välj språk'
-                this.addMoveButtonText = 'Lägg till drag'
+                this.addMoveButtonText = 'Lägg till fler'
                 break
             case 'en':
                 this.undoButtonText = "Undo move"
@@ -50,15 +50,15 @@ export class UserFeedback {
                     case State.OpeningMove:
                         return { message: "Välj öppningsdrag", buttonText: "Välj drag" }
                     case State.CounterMove:
-                        return { message: "Välj motdrag", buttonText: "Välj drag" }
+                        return { message: "Välj motdrag", buttonText: "Lägg till" }
                     case State.LineSaved:
-                        return { message: "Variant sparad", buttonText: "OK" }
+                        return { message: "Variant sparad", buttonText: "Fortsätt" }
                     case State.GuessMove:
                         return { message: "Vilket drag spelar du nu?", buttonText: "Välj drag" }
                     case State.MoveNotInDb:
                         return { message: "Draget finns ej i databasen", buttonText: "OK" }
                     case State.CorrectMove:
-                        return { message: "Rätt!", buttonText: "Fortstätt" }
+                        return { message: "Rätt!", buttonText: "Fortsätt" }
                     case State.WrongMove:
                         return { message: "Fel! Rätt drag var " + message, buttonText: "Börja om" }
                 }
@@ -68,9 +68,9 @@ export class UserFeedback {
                     case State.OpeningMove:
                         return { message: "Choose opening move", buttonText: "Select move" }
                     case State.CounterMove:
-                        return { message: "Choose counter move", buttonText: "Select move" }
+                        return { message: "Choose counter move", buttonText: "Add move" }
                     case State.LineSaved:
-                        return { message: "Line saved", buttonText: "OK" }
+                        return { message: "Line saved", buttonText: "Continue" }
                     case State.GuessMove:
                         return { message: "What move are you playing now?", buttonText: "Choose move" }
                     case State.MoveNotInDb:
