@@ -72,6 +72,8 @@ const showRemoveIcon = computed(() => {
         <v-spacer></v-spacer>
         <v-col align="center" lg="4" md="5" sm="6">
 
+          <v-card class="mt-4" elevation="4">
+          <v-card-item>
           <v-alert class="ma-1" :color="userFeedback.color" :icon="userFeedback.icon"
             :title="userFeedback.feedback.message">
           </v-alert>
@@ -87,7 +89,7 @@ const showRemoveIcon = computed(() => {
                   userFeedback.feedback.buttonText }}</v-btn>
             </v-col>
             <v-col cols="5">
-              <v-btn v-if="userFeedback.state != State.MoveAdded" variant="outlined" class="ma-2" block
+              <v-btn variant="outlined" v-if="userFeedback.state != State.MoveAdded" class="ma-2" block
                 @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start icon="mdi-undo"></v-icon>{{
                   userFeedback.undoButtonText }}</v-btn>
 
@@ -107,25 +109,32 @@ const showRemoveIcon = computed(() => {
               @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 
           </span>
+        </v-card-item>
+        </v-card>
         </v-col>
+
+      
 
         <v-col>
 
           <transition-group name="move-cards">
-          <MoveCard v-for="move in movesToAdd" :key="move.uci" :move="move" :remove-icon="showRemoveIcon" @removeMove="gameplay.removeMove(move)" @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()"/>
-        </transition-group>
-          
-          <MoveDetails v-if="selectedMove != null && showMoveDetails" :selected-move="selectedMove" :moves-data="movesData"/>
+            <MoveCard v-for="move in movesToAdd" :key="move.uci" :move="move" :remove-icon="showRemoveIcon"
+              @removeMove="gameplay.removeMove(move)" @mouseover="gameplay.drawMove(move)"
+              @mouseout="gameplay.hideMoves()" />
+          </transition-group>
 
-          
+          <MoveDetails v-if="selectedMove != null && showMoveDetails" :selected-move="selectedMove"
+            :moves-data="movesData" />
+
+
           <!--Buttons right panel-->
-          <v-card class="mt-4" elevation="2" max-width="340" v-if="selectedMove != null && showMoveDetails">
+          <v-card class="mt-4" elevation="4" max-width="340" v-if="selectedMove != null && showMoveDetails">
             <v-card-actions>
               <v-btn class="ma-2" variant="outlined" @click="gameplay.submitButtonCallback()"
                 :disabled="submitButtonStatus"><v-icon start icon="mdi-checkbox-marked-circle"></v-icon>{{
                   userFeedback.feedback.buttonText }}</v-btn>
-              <v-btn class="ma-2" variant="outlined"
-                @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start icon="mdi-undo"></v-icon>{{
+              <v-btn class="ma-2" variant="outlined" @click="gameplay.undoLastMove()"
+                :disabled="undoButtonDisabled"><v-icon start icon="mdi-undo"></v-icon>{{
                   userFeedback.undoButtonText
                 }}</v-btn>
             </v-card-actions>
@@ -142,7 +151,6 @@ const showRemoveIcon = computed(() => {
 </template>
 
 <style scoped>
-
 .move-cards-enter-active {
   transition: all 0.3s ease-out;
 }
@@ -152,5 +160,4 @@ const showRemoveIcon = computed(() => {
   opacity: 0;
 
 }
-
 </style>
