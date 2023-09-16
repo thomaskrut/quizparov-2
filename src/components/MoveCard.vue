@@ -22,7 +22,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <v-card class="mt-4" elevation="4" max-width="340" :class="{'bg-info': highlighted}">
+    <v-card class="mt-5" elevation="4" max-width="340" :class="{'bg-info': highlighted}">
         <template v-slot:prepend>
           <v-icon size="x-large">
             {{ getPieceIcon(move) }}

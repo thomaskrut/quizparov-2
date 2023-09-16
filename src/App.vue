@@ -14,7 +14,10 @@ const language = ref<string>('sv')
 
 const moveButtonsToggle = ref<boolean>(true)
 
-let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value, 4)
+const treeDepth = 4
+const movesToConsider = 3
+
+let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value, treeDepth)
 
 const { movesData, userFeedback, submitButtonStatus, selectedMove, currentLine, movesToAdd } = gameplay.useGameplayData()
 
@@ -69,10 +72,35 @@ const showMoveButtons = computed(() => {
 
     <v-main>
       <v-row justify="center">
-        <v-spacer></v-spacer>
+        
+        <v-col>
+          <v-card class="mt-5 ml-5" elevation="4" max-width="340">
+            <v-card-item>
+              <v-card-title>
+                <div class="text-overline mb-1">
+                  Inställningar
+              </div>
+                <v-divider></v-divider>
+              </v-card-title>
+            </v-card-item>
+            <v-card-text>
+              <br>
+              <p class="text-subtitle">Maxdjup</p>
+                <v-slider v-model="treeDepth" max="10" min="0" step="2" thumb-label readonly></v-slider>
+                <p class="text-subtitle">Antal drag motståndare</p>
+                <v-slider v-model="movesToConsider" max="10" min="0" step="1" thumb-label readonly></v-slider>
+              
+              
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+
+
+
         <v-col align="center" lg="4" md="5" sm="8" xs="12">
 
-          <v-card class="mt-4" elevation="4">
+          <v-card class="mt-5" elevation="4">
           <v-card-item>
           <v-alert class="ma-1" :color="userFeedback.color" :icon="userFeedback.icon"
             :title="userFeedback.feedback.message">
@@ -128,7 +156,7 @@ const showMoveButtons = computed(() => {
 
 
           <!--Buttons right panel-->
-          <v-card class="mt-4" elevation="4" max-width="340" v-if="selectedMove != null && showMoveDetails">
+          <v-card class="mt-5" elevation="4" max-width="340" v-if="selectedMove != null && showMoveDetails">
             <v-card-actions>
               <v-btn class="ma-2" variant="outlined" @click="gameplay.submitButtonCallback()"
                 :disabled="submitButtonStatus"><v-icon start icon="mdi-checkbox-marked-circle"></v-icon>{{

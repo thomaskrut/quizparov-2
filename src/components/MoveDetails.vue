@@ -11,7 +11,7 @@ defineProps<{
 </script>
 
 <template>
-    <v-card class="mt-4" elevation="4" max-width="340">
+    <v-card class="mt-5" elevation="4" max-width="340">
         <v-card-item>
             <div>
                 <div class="text-overline mb-1">
