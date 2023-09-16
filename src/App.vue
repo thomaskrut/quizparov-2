@@ -41,8 +41,9 @@ const showMoveDetails = computed(() => {
   return userFeedback.value.state == State.OpeningMove || userFeedback.value.state == State.CounterMove
 })
 
-
-
+const showRemoveIcon = computed(() => {
+  return userFeedback.value.state == State.MoveAdded || userFeedback.value.state == State.CounterMove
+})
 
 </script>
 
@@ -111,7 +112,7 @@ const showMoveDetails = computed(() => {
         <v-col>
 
           <transition-group name="move-cards">
-          <MoveCard v-for="move in movesToAdd" :key="move.uci" :move="move" @removeMove="gameplay.removeMove(move)" @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()"/>
+          <MoveCard v-for="move in movesToAdd" :key="move.uci" :move="move" :remove-icon="showRemoveIcon" @removeMove="gameplay.removeMove(move)" @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()"/>
         </transition-group>
           
           <MoveDetails v-if="selectedMove != null && showMoveDetails" :selected-move="selectedMove" :moves-data="movesData"/>
@@ -123,12 +124,10 @@ const showMoveDetails = computed(() => {
               <v-btn class="ma-2" variant="outlined" @click="gameplay.submitButtonCallback()"
                 :disabled="submitButtonStatus"><v-icon start icon="mdi-checkbox-marked-circle"></v-icon>{{
                   userFeedback.feedback.buttonText }}</v-btn>
-              <v-btn v-if="userFeedback.state != State.MoveAdded" class="ma-2" variant="outlined"
+              <v-btn class="ma-2" variant="outlined"
                 @click="gameplay.undoLastMove()" :disabled="undoButtonDisabled"><v-icon start icon="mdi-undo"></v-icon>{{
                   userFeedback.undoButtonText
                 }}</v-btn>
-              <v-btn v-else variant="outlined" class="ma-2" @click="gameplay.addAnotherMove()"><v-icon start
-                  icon="mdi-plus"></v-icon>{{ userFeedback.addMoveButtonText }} </v-btn>
             </v-card-actions>
           </v-card>
 

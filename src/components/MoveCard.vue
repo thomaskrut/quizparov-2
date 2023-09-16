@@ -5,6 +5,7 @@ import WinGraph from './WinGraph.vue';
 import { onMounted, ref } from 'vue';
 defineProps<{
     move: Move;
+    removeIcon: boolean
 }>();
 
 defineEmits(['removeMove']);
@@ -30,7 +31,7 @@ onMounted(() => {
           <template v-slot:title>
             {{ move.san }}
           </template>
-          <template v-slot:append>
+          <template v-if="removeIcon" v-slot:append>
             <v-icon @click="$emit('removeMove')">
               mdi-minus-circle-outline
             </v-icon>
