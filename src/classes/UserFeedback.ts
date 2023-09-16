@@ -101,7 +101,7 @@ export class UserFeedback {
                 break
             case State.MoveAdded:
                 this.icon = "mdi-check"
-                this.color = "info"
+                this.color = "primary"
                 break
             case State.GuessMove:
                 this.icon = "mdi-head-question"

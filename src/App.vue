@@ -7,9 +7,6 @@ import 'vue3-chessboard/style.css'
 import { type BoardConfig } from 'vue3-chessboard'
 import { GameplayApi } from './classes/Gameplay'
 import { State } from './types/State'
-import WinGraph from './components/WinGraph.vue'
-import LineViewer from './components/LineViewer.vue'
-import { getTotalNumberOfGames, getPositionOfMove, getPieceIcon } from './utils/utils'
 import MoveCard from './components/MoveCard.vue'
 
 const orientation = ref<BoardConfig['orientation']>('white')
@@ -50,11 +47,10 @@ const showRemoveIcon = computed(() => {
 <template>
   <v-app>
 
-    <!--
+   
     <v-app-bar title="Quizparov 2" color="primary" density="compact" flat>
 
       <template v-slot:prepend>
-       
         <v-app-bar-nav-icon></v-app-bar-nav-icon>
       </template>
 
@@ -65,12 +61,12 @@ const showRemoveIcon = computed(() => {
     </template>
     
     </v-app-bar>
-    -->
+  
 
     <v-main>
       <v-row justify="center">
         <v-spacer></v-spacer>
-        <v-col align="center" lg="4" md="5" sm="6">
+        <v-col align="center" lg="4" md="5" sm="8" xs="12">
 
           <v-card class="mt-4" elevation="4">
           <v-card-item>
@@ -115,7 +111,7 @@ const showRemoveIcon = computed(() => {
 
       
 
-        <v-col>
+        <v-col lg="4" md="5" sm="8" xs="12">
 
           <transition-group name="move-cards">
             <MoveCard v-for="move in movesToAdd" :key="move.uci" :move="move" :remove-icon="showRemoveIcon"
@@ -142,8 +138,7 @@ const showRemoveIcon = computed(() => {
 
         </v-col>
 
-
-
+        <v-spacer> </v-spacer>
       </v-row>
 
     </v-main>
