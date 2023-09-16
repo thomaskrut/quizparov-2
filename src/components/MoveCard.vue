@@ -9,7 +9,7 @@ defineProps<{
 
 defineEmits(['removeMove']);
 
-const highlighted = ref<boolean>(true);
+const highlighted = ref<boolean>(false);
 
 onMounted(() => {
     setTimeout(() => {

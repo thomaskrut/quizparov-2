@@ -110,9 +110,9 @@ const showMoveDetails = computed(() => {
 
         <v-col>
 
-         
+          <transition-group name="move-cards">
           <MoveCard v-for="move in movesToAdd" :key="move.uci" :move="move" @removeMove="gameplay.removeMove(move)" @mouseover="gameplay.drawMove(move)" @mouseout="gameplay.hideMoves()"/>
-
+        </transition-group>
           
           <MoveDetails v-if="selectedMove != null && showMoveDetails" :selected-move="selectedMove" :moves-data="movesData"/>
 
@@ -142,4 +142,16 @@ const showMoveDetails = computed(() => {
   </v-app>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+.move-cards-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.move-cards-enter-from {
+  transform: translateY(20px);
+  opacity: 0;
+
+}
+
+</style>

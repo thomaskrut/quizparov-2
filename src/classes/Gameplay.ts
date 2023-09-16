@@ -89,14 +89,14 @@ export class GameplayApi {
         this.submitButtonDisabled.value = true;
       }
     } else {
-      this.submitButtonDisabled.value = false;
+      this.submitButtonDisabled.value = this.movesToAdd.value.includes(this.selectedMove.value)
     }
   }
 
   previewMove(move: Move) {
     this.board?.move(move.san);
     this.selectedMove.value = move;
-    this.submitButtonDisabled.value = false;
+    this.submitButtonDisabled.value = this.movesToAdd.value.includes(this.selectedMove.value)
     this.hideMoves();
   }
 
