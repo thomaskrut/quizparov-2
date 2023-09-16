@@ -26,7 +26,7 @@ export class Tree {
         let currentNode = this.root
         this.moveSequence.value.forEach(move => {
             if (currentNode.children.length > 0) {
-                currentNode = currentNode.children.filter(node => node.move?.san === move.san)[0] as MoveNode ?? currentNode
+                currentNode = currentNode.children.find(node => node.move?.san === move.san) ?? currentNode
             }
         })
         return currentNode

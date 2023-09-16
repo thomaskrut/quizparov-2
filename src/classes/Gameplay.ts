@@ -122,6 +122,7 @@ export class GameplayApi {
 
   private resetBoard() {
     clearInterval(this.interval)
+    this.movesToAdd.value = [];
     this.board?.resetBoard();
     this.turn = new Turn("white");
     this.submitButtonCallback = this.submitMove;
@@ -132,7 +133,6 @@ export class GameplayApi {
 
   private saveMovesAndReset() {
     this.tree.addMoves(this.movesToAdd.value);
-    this.movesToAdd.value = [];
     this.resetBoard();
   }
 
@@ -155,6 +155,7 @@ export class GameplayApi {
   }
 
   private guessMove() {
+    this.movesToAdd.value.push(...this.tree.getCurrentNode().children.map(node => node.move!))
     if (this.tree.hasNextMove(this.selectedMove.value!)) {
       this.userFeedback.value.setState(State.CorrectMove);
       this.submitButtonCallback = this.submitMove;
@@ -170,7 +171,7 @@ export class GameplayApi {
       this.interval = setInterval(drawFunc, this.tree.getCurrentNode().children.length * 500)
       
       this.userFeedback.value.setState(State.WrongMove, this.tree.getCurrentNode().children.map(c => c.move?.san).join(', eller '));
-
+      
       this.submitButtonCallback = this.resetBoard;
     }
   }
