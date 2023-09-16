@@ -12,7 +12,7 @@ import MoveCard from './components/MoveCard.vue'
 const orientation = ref<BoardConfig['orientation']>('white')
 const language = ref<string>('sv')
 
-const showMoveButtons = ref<boolean>(true)
+const moveButtonsToggle = ref<boolean>(true)
 
 let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value, 4)
 
@@ -42,6 +42,10 @@ const showRemoveIcon = computed(() => {
   return userFeedback.value.state == State.MoveAdded || userFeedback.value.state == State.CounterMove
 })
 
+const showMoveButtons = computed(() => {
+  return (userFeedback.value.state != State.GuessMove) && (userFeedback.value.previousState != State.GuessMove) && (userFeedback.value.state != State.MaxDepthReached)
+})
+
 </script>
 
 <template>
@@ -56,7 +60,7 @@ const showRemoveIcon = computed(() => {
 
       <template v-slot:append>
   
-      <v-switch :label="userFeedback.moveButtonsToggleText" v-model="showMoveButtons" hide-details inset></v-switch>
+      <v-switch :label="userFeedback.moveButtonsToggleText" v-model="moveButtonsToggle" hide-details inset></v-switch>
      
     </template>
     
@@ -100,7 +104,7 @@ const showRemoveIcon = computed(() => {
           <span v-if="movesData">
 
             <MoveButtons
-              v-if="showMoveButtons && (userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove) && (userFeedback.state != State.MaxDepthReached)"
+              v-if="moveButtonsToggle && showMoveButtons"
               :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)"
               @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 

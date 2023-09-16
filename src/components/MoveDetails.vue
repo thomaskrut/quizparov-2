@@ -19,7 +19,7 @@ defineProps<{
                     <v-divider></v-divider>
                 </div>
                 <div class="text-h3 ma-4">
-                    <v-icon>
+                    <v-icon size="small">
                         {{ getPieceIcon(selectedMove) }}
                     </v-icon>
                     {{ selectedMove?.san }}

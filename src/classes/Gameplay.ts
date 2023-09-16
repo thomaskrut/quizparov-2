@@ -124,7 +124,7 @@ export class GameplayApi {
   }
 
   private makeComputerMove() {
-    this.selectedMove.value = getRandomMove(this.movesData.value!.moves, 2);
+    this.selectedMove.value = getRandomMove(this.movesData.value!.moves, 3);
     this.board!.move(this.selectedMove.value.san);
     this.submitMove();
   }
