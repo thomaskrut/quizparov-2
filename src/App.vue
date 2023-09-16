@@ -14,7 +14,7 @@ const language = ref<string>('sv')
 
 const showMoveButtons = ref<boolean>(true)
 
-let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value)
+let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value, 4)
 
 const { movesData, userFeedback, submitButtonStatus, selectedMove, currentLine, movesToAdd } = gameplay.useGameplayData()
 
@@ -100,7 +100,7 @@ const showRemoveIcon = computed(() => {
           <span v-if="movesData">
 
             <MoveButtons
-              v-if="showMoveButtons && (userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove)"
+              v-if="showMoveButtons && (userFeedback.state != State.GuessMove) && (userFeedback.previousState != State.GuessMove) && (userFeedback.state != State.MaxDepthReached)"
               :selectedMove="selectedMove" :movesData="movesData" @previewMove="(move) => gameplay.previewMove(move)"
               @drawMove="(move) => gameplay.drawMove(move)" @hideMoves="gameplay.hideMoves()" />
 

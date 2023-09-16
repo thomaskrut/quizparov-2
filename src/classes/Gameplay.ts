@@ -20,6 +20,7 @@ export class GameplayApi {
   private orientation: BoardConfig["orientation"];
   
   private interval: number = 0
+  private treeDepth: number = 0
 
   private movesToAdd = ref<Move[]>([]);
   private selectedMove = ref<Move | null>(null);
@@ -29,9 +30,10 @@ export class GameplayApi {
 
   submitButtonCallback = this.submitMove;
 
-  constructor(orientation: BoardConfig["orientation"], language: string) {
+  constructor(orientation: BoardConfig["orientation"], language: string, depth: number) {
     this.userFeedback.value.setLanguage(language);
     this.orientation = orientation;
+    this.treeDepth = depth;
     this.playNextTurn();
   }
 
@@ -73,6 +75,7 @@ export class GameplayApi {
 
   submitMove() {
     this.tree.addMove(this.selectedMove.value!);
+    this.movesToAdd.value = [];
     this.turn.toggle();
     this.submitButtonDisabled.value = true;
     this.playNextTurn();
@@ -108,7 +111,13 @@ export class GameplayApi {
       if (this.turn.color == this.orientation) {
         this.determineState();
       } else {
+        if (this.tree.getCurrentDepth() < this.treeDepth) {
         this.makeComputerMove();
+        } else {
+          this.userFeedback.value.setState(State.MaxDepthReached);
+          this.submitButtonDisabled.value = false;
+          this.submitButtonCallback = this.resetBoard;
+        }
       }
     });
 

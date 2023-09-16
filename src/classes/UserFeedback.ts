@@ -14,7 +14,7 @@ export class UserFeedback {
     moveButtonsToggleText: string = ''
     addMoveButtonText: string = ''
     selectLanguageText: string = ''
-    icon: "mdi-information" | "mdi-alert" | "mdi-check" | "mdi-star-face" | "mdi-head-question" = "mdi-information"
+    icon: "mdi-information" | "mdi-alert" | "mdi-check" | "mdi-star-face" | "mdi-head-question" | "mdi-counter" = "mdi-information"
     color: string | "primary" | "error" | "success" | "info" = "primary"
     
 
@@ -61,6 +61,8 @@ export class UserFeedback {
                         return { message: "Rätt!", buttonText: "Fortsätt" }
                     case State.WrongMove:
                         return { message: "Fel! Rätt drag var " + message, buttonText: "Börja om" }
+                    case State.MaxDepthReached:
+                        return { message: "Maximalt antal drag uppnått", buttonText: "Börja om" }
                 }
                 break;
             case "en":
@@ -79,6 +81,8 @@ export class UserFeedback {
                         return { message: "Correct!", buttonText: "Continue" }
                     case State.WrongMove:
                         return { message: "Wrong! Correct move was " + message, buttonText: "Start over" }
+                    case State.MaxDepthReached:
+                        return { message: "Max depth reached", buttonText: "Start over" }
                 }
                 break;
         }
@@ -118,6 +122,10 @@ export class UserFeedback {
             case State.WrongMove:
                 this.icon = "mdi-alert"
                 this.color = "error"
+                break
+            case State.MaxDepthReached:
+                this.icon = "mdi-counter"
+                this.color = "success"
                 break
         }
     }

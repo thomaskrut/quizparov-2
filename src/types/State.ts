@@ -5,5 +5,6 @@ export enum State {
     MoveNotInDb,
     CorrectMove,
     WrongMove,
-    MoveAdded
+    MoveAdded,
+    MaxDepthReached
 }

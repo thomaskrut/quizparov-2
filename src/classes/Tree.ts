@@ -32,6 +32,10 @@ export class Tree {
         return currentNode
     }
 
+    getCurrentDepth(): number {
+        return this.moveSequence.value.length
+    }
+
     hasMoves(): boolean {
         return this.getCurrentNode().children.length > 0
     }
