@@ -8,20 +8,23 @@ import { type BoardConfig } from 'vue3-chessboard'
 import { GameplayApi } from './classes/Gameplay'
 import { State } from './types/State'
 import MoveCard from './components/MoveCard.vue'
+import type { MovesData } from './types/MovesData'
+
+const started = ref<boolean>(false)
+
+const treeDepth = ref<number>(4)
+const movesToConsider = ref<number>(3)
 
 const orientation = ref<BoardConfig['orientation']>('white')
 const language = ref<string>('sv')
 
 const moveButtonsToggle = ref<boolean>(true)
 
-const treeDepth = 4
-const movesToConsider = 3
-
-let gameplay: GameplayApi = new GameplayApi(orientation.value, language.value, treeDepth)
+let gameplay: GameplayApi = new GameplayApi(language.value)
 
 const { movesData, userFeedback, submitButtonStatus, selectedMove, currentLine, movesToAdd } = gameplay.useGameplayData()
 
-const boardConfig: BoardConfig = {
+const boardConfig = ref<BoardConfig>({
   coordinates: true,
   orientation: orientation.value,
   animation: {
@@ -31,6 +34,16 @@ const boardConfig: BoardConfig = {
   draggable: {
     enabled: false
   }
+})
+
+function start() {
+  gameplay.start(orientation.value, treeDepth.value, movesToConsider.value)
+  boardConfig.value.orientation = orientation.value
+  started.value = true
+}
+
+function stop() {
+  started.value = false
 }
 
 const undoButtonDisabled = computed(() => {
@@ -86,21 +99,28 @@ const showMoveButtons = computed(() => {
             <v-card-text>
               <br>
               <p class="text-subtitle">Maxdjup</p>
-                <v-slider v-model="treeDepth" max="10" min="0" step="2" thumb-label readonly></v-slider>
-                <p class="text-subtitle">Antal drag motståndare</p>
-                <v-slider v-model="movesToConsider" max="10" min="0" step="1" thumb-label readonly></v-slider>
+                <v-slider :disabled="started" v-model="treeDepth" max="10" min="2" step="2"><template v-slot:append>{{ treeDepth }} </template></v-slider>
+                
+                <p class="text-subtitle">Alternativa drag motståndare</p>
+                <v-slider :disabled="started" v-model="movesToConsider" max="10" min="1" step="1"><template v-slot:append>{{ movesToConsider }} </template></v-slider>
               
               
+                <v-radio-group v-model="orientation" :disabled="started">
+                  <v-radio label="Träna som vit" value="white"></v-radio>
+                  <v-radio label="Träna som svart" value="black"></v-radio>
+                </v-radio-group>
             </v-card-text>
+
+            <v-card-actions>
+              <v-btn block v-if="!started" variant="outlined" @click="start()">Starta</v-btn>
+              <v-btn block v-if="started" variant="outlined" @click="stop()">Avbryt</v-btn>
+            </v-card-actions>
           </v-card>
         </v-col>
 
-
-
-
         <v-col align="center" lg="4" md="5" sm="8" xs="12">
 
-          <v-card class="mt-5" elevation="4">
+          <v-card v-if="started" class="mt-5" elevation="4">
           <v-card-item>
           <v-alert class="ma-1" :color="userFeedback.color" :icon="userFeedback.icon"
             :title="userFeedback.feedback.message">

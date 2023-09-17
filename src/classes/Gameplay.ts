@@ -21,6 +21,7 @@ export class GameplayApi {
   
   private interval: number = 0
   private treeDepth: number = 0
+  private movesToConsider: number = 0
 
   private movesToAdd = ref<Move[]>([]);
   private selectedMove = ref<Move | null>(null);
@@ -30,10 +31,14 @@ export class GameplayApi {
 
   submitButtonCallback = this.submitMove;
 
-  constructor(orientation: BoardConfig["orientation"], language: string, depth: number) {
+  constructor(language: string) {
     this.userFeedback.value.setLanguage(language);
+  }
+
+  start(orientation: BoardConfig["orientation"], depth: number, movesToConsider: number) {
     this.orientation = orientation;
     this.treeDepth = depth;
+    this.movesToConsider = movesToConsider;
     this.playNextTurn();
   }
 
@@ -124,7 +129,7 @@ export class GameplayApi {
   }
 
   private makeComputerMove() {
-    this.selectedMove.value = getRandomMove(this.movesData.value!.moves, 3);
+    this.selectedMove.value = getRandomMove(this.movesData.value!.moves, this.movesToConsider);
     this.board!.move(this.selectedMove.value.san);
     this.submitMove();
   }
