@@ -11,6 +11,7 @@ import type { Square } from "chess.js";
 import { Tree } from "./Tree";
 import { UserFeedback } from "./UserFeedback";
 import type { MovesData } from "../types/MovesData";
+import type { Settings } from "../types/Settings"
 
 export class GameplayApi {
 
@@ -35,12 +36,12 @@ export class GameplayApi {
     this.userFeedback.value.setLanguage(language);
   }
 
-  start(orientation: BoardConfig["orientation"], depth: number, movesToConsider: number) {
+  start(settings: Settings) {
     this.tree = new Tree();
     this.resetBoard();
-    this.orientation = orientation;
-    this.treeDepth = depth;
-    this.movesToConsider = movesToConsider;
+    this.orientation = settings.orientation;
+    this.treeDepth = settings.treeDepth;
+    this.movesToConsider = settings.movesToConsider;
     this.playNextTurn();
   }
 

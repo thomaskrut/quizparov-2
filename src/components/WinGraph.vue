@@ -32,10 +32,11 @@ const blackWins = ref((move.black / getTotalNumberOfGames(move) * 100).toFixed(0
 
 .bar {
     width: 100%;
-    height: 8px;
+    height: 6px;
     display: flex;
     background-color: black;
     border: 1px black solid;
+    border-radius: 6px;
 }
 
 .white {

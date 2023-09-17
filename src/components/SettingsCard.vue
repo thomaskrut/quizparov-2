@@ -12,7 +12,7 @@ const emit = defineEmits(['start', 'stop'])
 
 function start() {
   started.value = true
-  const settings = { treeDepth: treeDepth.value, movesToConsier: movesToConsider.value, orientation: orientation.value } as Settings
+  const settings = { treeDepth: treeDepth.value, movesToConsider: movesToConsider.value, orientation: orientation.value } as Settings
   emit('start', settings)
 }
 

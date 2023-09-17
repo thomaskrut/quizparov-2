@@ -3,6 +3,6 @@ import { ref } from 'vue'
 
 export interface Settings {
     orientation: BoardConfig['orientation']
-    movesToConsier: number
+    movesToConsider: number
     treeDepth: number
 }

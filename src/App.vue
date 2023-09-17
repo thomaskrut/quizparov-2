@@ -33,7 +33,7 @@ const boardConfig = ref<BoardConfig>({
 })
 
 function start(settings: Settings) {
-  gameplay.start(settings.orientation, settings.treeDepth, settings.movesToConsier)
+  gameplay.start(settings)
   boardConfig.value.orientation = settings.orientation
   started.value = true
 }
@@ -129,8 +129,6 @@ const showMoveButtons = computed(() => {
         </v-card>
         </v-col>
 
-      
-
         <v-col lg="4" md="5" sm="8" xs="12">
 
           <transition-group name="move-cards" v-if="started">
@@ -141,7 +139,6 @@ const showMoveButtons = computed(() => {
 
           <MoveDetails v-if="started && selectedMove != null && showMoveDetails" :selected-move="selectedMove"
             :moves-data="movesData" />
-
 
           <!--Buttons right panel-->
           <v-card class="mt-5" elevation="4" max-width="340" v-if="started && selectedMove != null && showMoveDetails">
