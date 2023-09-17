@@ -8,14 +8,12 @@ import { type BoardConfig } from 'vue3-chessboard'
 import { GameplayApi } from './classes/Gameplay'
 import { State } from './types/State'
 import MoveCard from './components/MoveCard.vue'
+import SettingsCard from './components/SettingsCard.vue'
 import type { MovesData } from './types/MovesData'
+import type { Settings } from './types/Settings'
 
 const started = ref<boolean>(false)
 
-const treeDepth = ref<number>(4)
-const movesToConsider = ref<number>(3)
-
-const orientation = ref<BoardConfig['orientation']>('white')
 const language = ref<string>('sv')
 
 const moveButtonsToggle = ref<boolean>(true)
@@ -26,7 +24,6 @@ const { movesData, userFeedback, submitButtonStatus, selectedMove, currentLine, 
 
 const boardConfig = ref<BoardConfig>({
   coordinates: true,
-  orientation: orientation.value,
   animation: {
     enabled: true,
     duration: 500,
@@ -36,9 +33,9 @@ const boardConfig = ref<BoardConfig>({
   }
 })
 
-function start() {
-  gameplay.start(orientation.value, treeDepth.value, movesToConsider.value)
-  boardConfig.value.orientation = orientation.value
+function start(settings: Settings) {
+  gameplay.start(settings.orientation, settings.treeDepth, settings.movesToConsier)
+  boardConfig.value.orientation = settings.orientation
   started.value = true
 }
 
@@ -68,7 +65,7 @@ const showMoveButtons = computed(() => {
   <v-app>
 
    
-    <v-app-bar title="Quizparov 2" color="primary" density="compact" flat>
+    <v-app-bar title="Quizparov 2" color="lime" elevation="4" density="compact" flat>
 
       <template v-slot:prepend>
         <v-app-bar-nav-icon></v-app-bar-nav-icon>
@@ -87,35 +84,7 @@ const showMoveButtons = computed(() => {
       <v-row justify="center">
         
         <v-col>
-          <v-card class="mt-5 ml-5" elevation="4" max-width="340">
-            <v-card-item>
-              <v-card-title>
-                <div class="text-overline mb-1">
-                  Inställningar
-              </div>
-                <v-divider></v-divider>
-              </v-card-title>
-            </v-card-item>
-            <v-card-text>
-              <br>
-              <p class="text-subtitle">Maxdjup</p>
-                <v-slider :disabled="started" v-model="treeDepth" max="10" min="2" step="2"><template v-slot:append>{{ treeDepth }} </template></v-slider>
-                
-                <p class="text-subtitle">Alternativa drag motståndare</p>
-                <v-slider :disabled="started" v-model="movesToConsider" max="10" min="1" step="1"><template v-slot:append>{{ movesToConsider }} </template></v-slider>
-              
-              
-                <v-radio-group v-model="orientation" :disabled="started">
-                  <v-radio label="Träna som vit" value="white"></v-radio>
-                  <v-radio label="Träna som svart" value="black"></v-radio>
-                </v-radio-group>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn block v-if="!started" variant="outlined" @click="start()">Starta</v-btn>
-              <v-btn block v-if="started" variant="outlined" @click="stop()">Avbryt</v-btn>
-            </v-card-actions>
-          </v-card>
+          <SettingsCard @start="(settings) => start(settings)" @stop="stop()"/>
         </v-col>
 
         <v-col align="center" lg="4" md="5" sm="8" xs="12">
