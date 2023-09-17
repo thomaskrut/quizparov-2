@@ -36,6 +36,8 @@ export class GameplayApi {
   }
 
   start(orientation: BoardConfig["orientation"], depth: number, movesToConsider: number) {
+    this.tree = new Tree();
+    this.resetBoard();
     this.orientation = orientation;
     this.treeDepth = depth;
     this.movesToConsider = movesToConsider;

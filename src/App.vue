@@ -9,7 +9,6 @@ import { GameplayApi } from './classes/Gameplay'
 import { State } from './types/State'
 import MoveCard from './components/MoveCard.vue'
 import SettingsCard from './components/SettingsCard.vue'
-import type { MovesData } from './types/MovesData'
 import type { Settings } from './types/Settings'
 
 const started = ref<boolean>(false)
@@ -134,18 +133,18 @@ const showMoveButtons = computed(() => {
 
         <v-col lg="4" md="5" sm="8" xs="12">
 
-          <transition-group name="move-cards">
+          <transition-group name="move-cards" v-if="started">
             <MoveCard v-for="move in movesToAdd" :key="move.uci" :move="move" :remove-icon="showRemoveIcon"
               @removeMove="gameplay.removeMove(move)" @mouseover="gameplay.drawMove(move)"
               @mouseout="gameplay.hideMoves()" />
           </transition-group>
 
-          <MoveDetails v-if="selectedMove != null && showMoveDetails" :selected-move="selectedMove"
+          <MoveDetails v-if="started && selectedMove != null && showMoveDetails" :selected-move="selectedMove"
             :moves-data="movesData" />
 
 
           <!--Buttons right panel-->
-          <v-card class="mt-5" elevation="4" max-width="340" v-if="selectedMove != null && showMoveDetails">
+          <v-card class="mt-5" elevation="4" max-width="340" v-if="started && selectedMove != null && showMoveDetails">
             <v-card-actions>
               <v-btn class="ma-2" variant="outlined" @click="gameplay.submitButtonCallback()"
                 :disabled="submitButtonStatus"><v-icon start icon="mdi-checkbox-marked-circle"></v-icon>{{
