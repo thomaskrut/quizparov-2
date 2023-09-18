@@ -5,6 +5,7 @@ export function getTotalNumberOfGames(move: Move) {
 }
 
 export function getRandomMove(moves: Move[], number: number) {
+    if (number > moves.length) number = moves.length
     const randomNumber = Math.floor(Math.random() * number)
     return moves[randomNumber]
 }
